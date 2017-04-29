@@ -1,0 +1,341 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Project-Id-Version: woocom-mobile-assistant-connector\n"
+"POT-Creation-Date: 2017-02-02 11:41+0200\n"
+"PO-Revision-Date: 2017-02-02 05:06-0500\n"
+"Last-Translator: emagicone <translations@emagicone.com>\n"
+"Language-Team: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: crowdin.com\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: mobassistantconnector.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+"X-Crowdin-Project: woocom-mobile-assistant-connector\n"
+"X-Crowdin-Language: en\n"
+"X-Crowdin-File: mobassistantconnector.pot\n"
+"Language: en_US\n"
+
+#: backend/view/main.php:5
+#, php-format
+msgid "Module version: <b>%s</b>"
+msgstr ""
+
+#: backend/view/main.php:8
+msgid "Check new version"
+msgstr "Check new version"
+
+#: backend/view/main.php:9
+msgid "Submit a ticket"
+msgstr "Submit a ticket"
+
+#: backend/view/main.php:10
+msgid "Documentation"
+msgstr "Documentation"
+
+#: backend/view/main.php:22
+msgid "New user"
+msgstr "New user"
+
+#: backend/view/main.php:31
+msgid "<strong>Success!</strong> User has been created"
+msgstr "<strong>Success!</strong> User has been created"
+
+#: backend/view/main.php:37 backend/view/main.php:156
+msgid "Login"
+msgstr "Login"
+
+#: backend/view/main.php:45 backend/view/main.php:164
+msgid "Password"
+msgstr "Password"
+
+#: backend/view/main.php:55 backend/view/main.php:62
+msgid "Add"
+msgstr "Add"
+
+#: backend/view/main.php:73
+msgid "Confirmation"
+msgstr "Confirmation"
+
+#: backend/view/main.php:76
+msgid "Do you want to delete current user?"
+msgstr "Do you want to delete current user?"
+
+#: backend/view/main.php:77
+msgid "All linked devices will be deleted too."
+msgstr "All linked devices will be deleted too."
+
+#: backend/view/main.php:87
+msgid "Cancel"
+msgstr "Cancel"
+
+#: backend/view/main.php:88
+msgid "Delete"
+msgstr "Delete"
+
+#: backend/view/main.php:106
+msgid "<strong>Success!</strong> User has been saved."
+msgstr "<strong>Success!</strong> User has been saved."
+
+#: backend/view/main.php:111
+msgid "<strong>Warning!</strong>&nbspMobile Assistant Connector: Change default login credentials to make your connection secure!"
+msgstr "<strong>Warning!</strong>&nbspMobile Assistant Connector: Change default login credentials to make your connection secure!"
+
+#: backend/view/main.php:114
+msgid "<strong>Warning!</strong>&nbspMobile Assistant Connector:"
+msgstr "<strong>Warning!</strong>&nbspMobile Assistant Connector:"
+
+#: backend/view/main.php:117
+msgid "Users:"
+msgstr "Users:"
+
+#: backend/view/main.php:120
+msgid "Add user "
+msgstr "Add user "
+
+#: backend/view/main.php:127
+msgid "Get the App from Google Play"
+msgstr "Get the App from Google Play"
+
+#: backend/view/main.php:132
+msgid "Click or use your device camera to read the qr-code"
+msgstr "Click or use your device camera to read the qr-code"
+
+#: backend/view/main.php:146
+msgid "Status:"
+msgstr "Status:"
+
+#: backend/view/main.php:149
+msgid "Enabled"
+msgstr "Enabled"
+
+#: backend/view/main.php:150
+msgid "Disabled"
+msgstr "Disabled"
+
+#: backend/view/main.php:159
+msgid "required"
+msgstr "required"
+
+#: backend/view/main.php:172 backend/view/main.php:175
+msgid "QR Code (configuration)"
+msgstr "QR Code (configuration)"
+
+#: backend/view/main.php:179
+msgid "Login details have been changed.<br>Save changes for code to be regenerated"
+msgstr "Login details have been changed.<br>Save changes for code to be regenerated"
+
+#: backend/view/main.php:182
+msgid "URL to share current QR-code"
+msgstr "URL to share current QR-code"
+
+#: backend/view/main.php:188
+msgid "Permissions"
+msgstr "Permissions"
+
+#: backend/view/main.php:190
+msgid "Push notification"
+msgstr "Push notification"
+
+#: backend/view/main.php:191
+msgid "New order created"
+msgstr "New order created"
+
+#: backend/view/main.php:192
+msgid "Order status changed"
+msgstr "Order status changed"
+
+#: backend/view/main.php:193
+msgid "New customer created"
+msgstr "New customer created"
+
+#: backend/view/main.php:196
+msgid "Store statistics"
+msgstr "Store statistics"
+
+#: backend/view/main.php:197
+msgid "View store statistics"
+msgstr "View store statistics"
+
+#: backend/view/main.php:200
+msgid "Orders"
+msgstr "Orders"
+
+#: backend/view/main.php:201
+msgid "View order list"
+msgstr "View order list"
+
+#: backend/view/main.php:202
+msgid "View order details"
+msgstr "View order details"
+
+#: backend/view/main.php:203
+msgid "Change order status"
+msgstr "Change order status"
+
+#: backend/view/main.php:204
+msgid "Download order invoice PDF"
+msgstr "Download order invoice PDF"
+
+#: backend/view/main.php:207
+msgid "Customers"
+msgstr "Customers"
+
+#: backend/view/main.php:208
+msgid "View customer list"
+msgstr "View customer list"
+
+#: backend/view/main.php:209
+msgid "View customer details"
+msgstr "View customer details"
+
+#: backend/view/main.php:212
+msgid "Products"
+msgstr "Products"
+
+#: backend/view/main.php:213
+msgid "View product list"
+msgstr "View product list"
+
+#: backend/view/main.php:214
+msgid "View product details"
+msgstr "View product details"
+
+#: backend/view/main.php:221
+msgid "Push notifications settings"
+msgstr "Push notifications settings"
+
+#: backend/view/main.php:228
+msgid "Device name"
+msgstr "Device name"
+
+#: backend/view/main.php:229
+msgid "Device account email"
+msgstr "Device account email"
+
+#: backend/view/main.php:230
+msgid "Last activity"
+msgstr "Last activity"
+
+#: backend/view/main.php:231
+msgid "App connection ID"
+msgstr "App connection ID"
+
+#: backend/view/main.php:233
+msgid "New order"
+msgstr "New order"
+
+#: backend/view/main.php:234
+msgid "New customer"
+msgstr "New customer"
+
+#: backend/view/main.php:235
+msgid "Order statuses"
+msgstr "Order statuses"
+
+#: backend/view/main.php:237
+msgid "Status"
+msgstr "Status"
+
+#: backend/view/main.php:251
+msgid "Delete User"
+msgstr "Delete User"
+
+#: backend/view/main.php:257
+msgid "Save User Details"
+msgstr "Save User Details"
+
+#: mobassistantconnector.php:617
+msgid "Please enable cURL library to use Push Notifications feature!"
+msgstr "Please enable cURL library to use Push Notifications feature!"
+
+#: sa.php:1433
+msgid "Guest"
+msgstr "Guest"
+
+#: sa.php:1594
+msgid "Customer note"
+msgstr "Customer note"
+
+#: sa.php:1596
+msgid "Private note"
+msgstr "Private note"
+
+#: sa.php:1612
+msgid "Invalid order note ID"
+msgstr "Invalid order note ID"
+
+#: sa.php:1618
+msgid "An order note with the provided ID could not be found"
+msgstr "An order note with the provided ID could not be found"
+
+#: sa.php:1659
+msgid "Grouped"
+msgstr "Grouped"
+
+#: sa.php:1662
+msgid "External/Affiliate"
+msgstr "External/Affiliate"
+
+#: sa.php:1667
+msgid "Virtual"
+msgstr "Virtual"
+
+#: sa.php:1670
+msgid "Downloadable"
+msgstr "Downloadable"
+
+#: sa.php:1673
+msgid "Simple"
+msgstr "Simple"
+
+#: sa.php:1677
+msgid "Variable"
+msgstr "Variable"
+
+#: sa.php:2337
+msgid "Published"
+msgstr "Published"
+
+#: sa.php:2340
+msgid "Scheduled"
+msgstr "Scheduled"
+
+#: sa.php:2343
+msgid "Pending Review"
+msgstr "Pending Review"
+
+#: sa.php:2346
+msgid "Draft"
+msgstr "Draft"
+
+#: sa.php:2349
+msgid "private"
+msgstr "private"
+
+#: sa.php:2352
+msgid "Trash"
+msgstr "Trash"
+
+#. Plugin Name of the plugin/theme
+msgid "Mobile Assistant Connector"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+#. Author URI of the plugin/theme
+msgid "http://woocommerce-manager.com"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "This plugin allows you to keep your online business under control wherever you are. All you need is just to have on hand your android mobile phone and Internet connection."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "eMagicOne"
+msgstr ""
+

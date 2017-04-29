@@ -1,0 +1,341 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Project-Id-Version: woocom-mobile-assistant-connector\n"
+"POT-Creation-Date: 2017-02-02 11:41+0200\n"
+"PO-Revision-Date: 2017-02-02 05:04-0500\n"
+"Last-Translator: emagicone <translations@emagicone.com>\n"
+"Language-Team: Ukrainian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: crowdin.com\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: mobassistantconnector.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+"X-Crowdin-Project: woocom-mobile-assistant-connector\n"
+"X-Crowdin-Language: uk\n"
+"X-Crowdin-File: mobassistantconnector.pot\n"
+"Language: uk_UA\n"
+
+#: backend/view/main.php:5
+#, php-format
+msgid "Module version: <b>%s</b>"
+msgstr ""
+
+#: backend/view/main.php:8
+msgid "Check new version"
+msgstr "Перевірити наявність нової версії"
+
+#: backend/view/main.php:9
+msgid "Submit a ticket"
+msgstr "Відправте запит у службу техпідтримки"
+
+#: backend/view/main.php:10
+msgid "Documentation"
+msgstr "Документація"
+
+#: backend/view/main.php:22
+msgid "New user"
+msgstr "Новий користувач"
+
+#: backend/view/main.php:31
+msgid "<strong>Success!</strong> User has been created"
+msgstr "<strong>Ура!</strong> Новий користувач успішно створений"
+
+#: backend/view/main.php:37 backend/view/main.php:156
+msgid "Login"
+msgstr "Логін"
+
+#: backend/view/main.php:45 backend/view/main.php:164
+msgid "Password"
+msgstr "Пароль"
+
+#: backend/view/main.php:55 backend/view/main.php:62
+msgid "Add"
+msgstr "Додати"
+
+#: backend/view/main.php:73
+msgid "Confirmation"
+msgstr "Підтвердження"
+
+#: backend/view/main.php:76
+msgid "Do you want to delete current user?"
+msgstr "Справді бажаєте видалити вибраного користувача?"
+
+#: backend/view/main.php:77
+msgid "All linked devices will be deleted too."
+msgstr "Всі привязані пристрої також будуть видалені."
+
+#: backend/view/main.php:87
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: backend/view/main.php:88
+msgid "Delete"
+msgstr "Видалити"
+
+#: backend/view/main.php:106
+msgid "<strong>Success!</strong> User has been saved."
+msgstr "<strong>Ура!</strong> Користувач збережений."
+
+#: backend/view/main.php:111
+msgid "<strong>Warning!</strong>&nbspMobile Assistant Connector: Change default login credentials to make your connection secure!"
+msgstr "<strong>Увага!</strong>&nbspMobile Assistant Connector: З питань безпеки, змініть поточні дані доступу!"
+
+#: backend/view/main.php:114
+msgid "<strong>Warning!</strong>&nbspMobile Assistant Connector:"
+msgstr "<strong>Увага!</strong>&nbspMobile Assistant Connector:"
+
+#: backend/view/main.php:117
+msgid "Users:"
+msgstr "Користувачі:"
+
+#: backend/view/main.php:120
+msgid "Add user "
+msgstr "Додати користувача "
+
+#: backend/view/main.php:127
+msgid "Get the App from Google Play"
+msgstr "Отримати додаток з Google Play"
+
+#: backend/view/main.php:132
+msgid "Click or use your device camera to read the qr-code"
+msgstr "Натисніть або скористайтесь камерою Вашого пристрою, щоб зчитати Qr-код"
+
+#: backend/view/main.php:146
+msgid "Status:"
+msgstr "Статус:"
+
+#: backend/view/main.php:149
+msgid "Enabled"
+msgstr "Включений"
+
+#: backend/view/main.php:150
+msgid "Disabled"
+msgstr "Виключений"
+
+#: backend/view/main.php:159
+msgid "required"
+msgstr "необхідно"
+
+#: backend/view/main.php:172 backend/view/main.php:175
+msgid "QR Code (configuration)"
+msgstr "QR код (налаштування)"
+
+#: backend/view/main.php:179
+msgid "Login details have been changed.<br>Save changes for code to be regenerated"
+msgstr "Дані доступу змінились.<br>Збережіть налаштування, щоб перегенерувати код"
+
+#: backend/view/main.php:182
+msgid "URL to share current QR-code"
+msgstr "URL для надання доступу до QR-коду"
+
+#: backend/view/main.php:188
+msgid "Permissions"
+msgstr "Дозволи"
+
+#: backend/view/main.php:190
+msgid "Push notification"
+msgstr "Push-повідомлення"
+
+#: backend/view/main.php:191
+msgid "New order created"
+msgstr "Створено нове замовлення"
+
+#: backend/view/main.php:192
+msgid "Order status changed"
+msgstr "Змінено статус замовлення"
+
+#: backend/view/main.php:193
+msgid "New customer created"
+msgstr "Створення нового користувача"
+
+#: backend/view/main.php:196
+msgid "Store statistics"
+msgstr "Статистика веб-магазину"
+
+#: backend/view/main.php:197
+msgid "View store statistics"
+msgstr "Перегляд статистики магазину"
+
+#: backend/view/main.php:200
+msgid "Orders"
+msgstr "Замовлення"
+
+#: backend/view/main.php:201
+msgid "View order list"
+msgstr "Перегляд переліку замовлень"
+
+#: backend/view/main.php:202
+msgid "View order details"
+msgstr "Перегляд деталень замовлення"
+
+#: backend/view/main.php:203
+msgid "Change order status"
+msgstr "Зміна статусу замовлення"
+
+#: backend/view/main.php:204
+msgid "Download order invoice PDF"
+msgstr "Завантажити PDF-інвойс"
+
+#: backend/view/main.php:207
+msgid "Customers"
+msgstr "Клієнти"
+
+#: backend/view/main.php:208
+msgid "View customer list"
+msgstr "Перегляд переліку клієнтів"
+
+#: backend/view/main.php:209
+msgid "View customer details"
+msgstr "Перегляд деталей клієнта"
+
+#: backend/view/main.php:212
+msgid "Products"
+msgstr "Продукти"
+
+#: backend/view/main.php:213
+msgid "View product list"
+msgstr "Перегляд переліку продуктів"
+
+#: backend/view/main.php:214
+msgid "View product details"
+msgstr "Перегляд деталей продукту"
+
+#: backend/view/main.php:221
+msgid "Push notifications settings"
+msgstr "Налаштування push-повідомлень"
+
+#: backend/view/main.php:228
+msgid "Device name"
+msgstr "Назва пристрою"
+
+#: backend/view/main.php:229
+msgid "Device account email"
+msgstr "Емейл облікового запису на пристрої"
+
+#: backend/view/main.php:230
+msgid "Last activity"
+msgstr "Остання активність"
+
+#: backend/view/main.php:231
+msgid "App connection ID"
+msgstr "ID підєднання в додатку"
+
+#: backend/view/main.php:233
+msgid "New order"
+msgstr "Нове замовлення"
+
+#: backend/view/main.php:234
+msgid "New customer"
+msgstr "Новий користувач"
+
+#: backend/view/main.php:235
+msgid "Order statuses"
+msgstr "Статуси замовлень"
+
+#: backend/view/main.php:237
+msgid "Status"
+msgstr "Статус"
+
+#: backend/view/main.php:251
+msgid "Delete User"
+msgstr "Видалити користувача"
+
+#: backend/view/main.php:257
+msgid "Save User Details"
+msgstr "Зберегти налаштування користувача"
+
+#: mobassistantconnector.php:617
+msgid "Please enable cURL library to use Push Notifications feature!"
+msgstr "Будь ласка, активуйте cURL бібліотеку, щоб використовувати Push Notifications!"
+
+#: sa.php:1433
+msgid "Guest"
+msgstr "Гість"
+
+#: sa.php:1594
+msgid "Customer note"
+msgstr "Примітка замовника"
+
+#: sa.php:1596
+msgid "Private note"
+msgstr "Приватна замітка"
+
+#: sa.php:1612
+msgid "Invalid order note ID"
+msgstr "Невірний ID примітки для замовлення"
+
+#: sa.php:1618
+msgid "An order note with the provided ID could not be found"
+msgstr "Примітка до замовлення за вказаним ID не знайдена"
+
+#: sa.php:1659
+msgid "Grouped"
+msgstr "Згруповано"
+
+#: sa.php:1662
+msgid "External/Affiliate"
+msgstr "Зовнішній"
+
+#: sa.php:1667
+msgid "Virtual"
+msgstr "Віртуальний"
+
+#: sa.php:1670
+msgid "Downloadable"
+msgstr "Завантажуваний"
+
+#: sa.php:1673
+msgid "Simple"
+msgstr "Простий"
+
+#: sa.php:1677
+msgid "Variable"
+msgstr "Змінний"
+
+#: sa.php:2337
+msgid "Published"
+msgstr "Опубліковано"
+
+#: sa.php:2340
+msgid "Scheduled"
+msgstr "Заплановано"
+
+#: sa.php:2343
+msgid "Pending Review"
+msgstr "Відгуки в очікуванні"
+
+#: sa.php:2346
+msgid "Draft"
+msgstr "Чернетка"
+
+#: sa.php:2349
+msgid "private"
+msgstr "приватний"
+
+#: sa.php:2352
+msgid "Trash"
+msgstr "Смітник"
+
+#. Plugin Name of the plugin/theme
+msgid "Mobile Assistant Connector"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+#. Author URI of the plugin/theme
+msgid "http://woocommerce-manager.com"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "This plugin allows you to keep your online business under control wherever you are. All you need is just to have on hand your android mobile phone and Internet connection."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "eMagicOne"
+msgstr ""
+

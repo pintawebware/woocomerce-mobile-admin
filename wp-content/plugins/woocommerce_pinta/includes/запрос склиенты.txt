@@ -1,0 +1,60 @@
+SELECT customer_user.meta_value 
+as customer_user, order_total.meta_value 
+as order_total, shipping_first_name.meta_value 
+as shipping_first_name, shipping_last_name.meta_value 
+as shipping_last_name, billing_first_name.meta_value 
+as billing_first_name, billing_last_name.meta_value 
+as billing_last_name, order_currency.meta_value 
+as order_currency, user_registered.user_registered 
+FROM wp_posts AS posts 
+LEFT JOIN wp_postmeta AS customer_user 
+ON customer_user.post_id = posts.ID 
+AND customer_user.meta_key = '_customer_user' 
+LEFT JOIN wp_postmeta AS order_total ON order_total.post_id = posts.ID 
+AND order_total.meta_key = '_order_total' 
+LEFT JOIN wp_postmeta AS shipping_first_name 
+ON shipping_first_name.post_id = posts.ID 
+AND shipping_first_name.meta_key = '_shipping_first_name' 
+LEFT JOIN wp_postmeta AS shipping_last_name ON shipping_last_name.post_id = posts.ID 
+AND shipping_last_name.meta_key = '_shipping_last_name' 
+LEFT JOIN wp_postmeta AS billing_first_name 
+ON billing_first_name.post_id = posts.ID 
+AND billing_first_name.meta_key = '_billing_first_name' 
+LEFT JOIN wp_postmeta AS billing_last_name ON billing_last_name.post_id = posts.ID 
+AND billing_last_name.meta_key = '_billing_last_name' 
+LEFT JOIN wp_postmeta AS order_currency ON order_currency.post_id = posts.ID
+ AND order_currency.meta_key = '_order_currency'
+  LEFT JOIN wp_users AS user_registered ON user_registered.ID = customer_user.meta_value 
+AND posts.post_status NOT IN ( 'auto-draft', 'draft', 'trash' )
+WHERE customer_user.meta_value>0
+ORDER BY customer_user.meta_value ASC
+
+
+
+
+SELECT customer_user.meta_value 
+as customer_user, order_total.meta_value 
+as order_total, shipping_first_name.meta_value 
+as shipping_first_name, shipping_last_name.meta_value 
+as shipping_last_name, billing_first_name.meta_value 
+as billing_first_name, billing_last_name.meta_value 
+as billing_last_name, order_currency.meta_value 
+as order_currency, user_registered.user_registered 
+FROM  wp_postmeta AS customer_user 
+LEFT JOIN wp_postmeta AS order_total ON order_total.post_id =  customer_user.post_id
+AND order_total.meta_key = '_order_total' 
+LEFT JOIN wp_postmeta AS shipping_first_name 
+ON shipping_first_name.post_id = customer_user.post_id
+AND shipping_first_name.meta_key = '_shipping_first_name' 
+LEFT JOIN wp_postmeta AS shipping_last_name ON shipping_last_name.post_id = customer_user.post_id 
+AND shipping_last_name.meta_key = '_shipping_last_name' 
+LEFT JOIN wp_postmeta AS billing_first_name 
+ON billing_first_name.post_id = customer_user.post_id 
+AND billing_first_name.meta_key = '_billing_first_name' 
+LEFT JOIN wp_postmeta AS billing_last_name ON billing_last_name.post_id = customer_user.post_id
+AND billing_last_name.meta_key = '_billing_last_name' 
+LEFT JOIN wp_postmeta AS order_currency ON order_currency.post_id = customer_user.post_id
+ AND order_currency.meta_key = '_order_currency'
+WHERE customer_user.meta_value>0
+AND customer_user.meta_key = '_customer_user' 
+ORDER BY customer_user.meta_value ASC

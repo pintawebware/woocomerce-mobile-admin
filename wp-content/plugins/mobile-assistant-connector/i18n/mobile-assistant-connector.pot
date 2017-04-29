@@ -1,0 +1,345 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Project-Id-Version: Mobile Assistant Connector\n"
+"POT-Creation-Date: 2017-02-20 13:09+0200\n"
+"PO-Revision-Date: 2017-02-20 13:08+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.8\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: mobassistantconnector.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: backend/view/main.php:5
+#, php-format
+msgid "Module version: <b>%s</b>"
+msgstr ""
+
+#: backend/view/main.php:8
+msgid "Check new version"
+msgstr ""
+
+#: backend/view/main.php:9
+msgid "Submit a ticket"
+msgstr ""
+
+#: backend/view/main.php:10
+msgid "Documentation"
+msgstr ""
+
+#: backend/view/main.php:22
+msgid "New user"
+msgstr ""
+
+#: backend/view/main.php:31
+msgid "<strong>Success!</strong> User has been created"
+msgstr ""
+
+#: backend/view/main.php:37 backend/view/main.php:156
+msgid "Login"
+msgstr ""
+
+#: backend/view/main.php:45 backend/view/main.php:164
+msgid "Password"
+msgstr ""
+
+#: backend/view/main.php:55 backend/view/main.php:62
+msgid "Add"
+msgstr ""
+
+#: backend/view/main.php:73
+msgid "Confirmation"
+msgstr ""
+
+#: backend/view/main.php:76
+msgid "Do you want to delete current user?"
+msgstr ""
+
+#: backend/view/main.php:77
+msgid "All linked devices will be deleted too."
+msgstr ""
+
+#: backend/view/main.php:87
+msgid "Cancel"
+msgstr ""
+
+#: backend/view/main.php:88
+msgid "Delete"
+msgstr ""
+
+#: backend/view/main.php:106
+msgid "<strong>Success!</strong> User has been saved."
+msgstr ""
+
+#: backend/view/main.php:111
+msgid ""
+"<strong>Warning!</strong>&nbspMobile Assistant Connector: Change default "
+"login credentials to make your connection secure!"
+msgstr ""
+
+#: backend/view/main.php:114
+msgid "<strong>Warning!</strong>&nbspMobile Assistant Connector:"
+msgstr ""
+
+#: backend/view/main.php:117
+msgid "Users:"
+msgstr ""
+
+#: backend/view/main.php:120
+msgid "Add user "
+msgstr ""
+
+#: backend/view/main.php:127
+msgid "Get the App from Google Play"
+msgstr ""
+
+#: backend/view/main.php:132
+msgid "Click or use your device camera to read the qr-code"
+msgstr ""
+
+#: backend/view/main.php:146
+msgid "Status:"
+msgstr ""
+
+#: backend/view/main.php:149
+msgid "Enabled"
+msgstr ""
+
+#: backend/view/main.php:150
+msgid "Disabled"
+msgstr ""
+
+#: backend/view/main.php:159
+msgid "required"
+msgstr ""
+
+#: backend/view/main.php:172 backend/view/main.php:175
+msgid "QR Code (configuration)"
+msgstr ""
+
+#: backend/view/main.php:179
+msgid ""
+"Login details have been changed.<br>Save changes for code to be regenerated"
+msgstr ""
+
+#: backend/view/main.php:182
+msgid "URL to share current QR-code"
+msgstr ""
+
+#: backend/view/main.php:188
+msgid "Permissions"
+msgstr ""
+
+#: backend/view/main.php:190
+msgid "Push notification"
+msgstr ""
+
+#: backend/view/main.php:191
+msgid "New order created"
+msgstr ""
+
+#: backend/view/main.php:192
+msgid "Order status changed"
+msgstr ""
+
+#: backend/view/main.php:193
+msgid "New customer created"
+msgstr ""
+
+#: backend/view/main.php:196
+msgid "Store statistics"
+msgstr ""
+
+#: backend/view/main.php:197
+msgid "View store statistics"
+msgstr ""
+
+#: backend/view/main.php:200
+msgid "Orders"
+msgstr ""
+
+#: backend/view/main.php:201
+msgid "View order list"
+msgstr ""
+
+#: backend/view/main.php:202
+msgid "View order details"
+msgstr ""
+
+#: backend/view/main.php:203
+msgid "Change order status"
+msgstr ""
+
+#: backend/view/main.php:204
+msgid "Download order invoice PDF"
+msgstr ""
+
+#: backend/view/main.php:207
+msgid "Customers"
+msgstr ""
+
+#: backend/view/main.php:208
+msgid "View customer list"
+msgstr ""
+
+#: backend/view/main.php:209
+msgid "View customer details"
+msgstr ""
+
+#: backend/view/main.php:212
+msgid "Products"
+msgstr ""
+
+#: backend/view/main.php:213
+msgid "View product list"
+msgstr ""
+
+#: backend/view/main.php:214
+msgid "View product details"
+msgstr ""
+
+#: backend/view/main.php:221
+msgid "Push notifications settings"
+msgstr ""
+
+#: backend/view/main.php:228
+msgid "Device name"
+msgstr ""
+
+#: backend/view/main.php:229
+msgid "Device account email"
+msgstr ""
+
+#: backend/view/main.php:230
+msgid "Last activity"
+msgstr ""
+
+#: backend/view/main.php:231
+msgid "App connection ID"
+msgstr ""
+
+#: backend/view/main.php:233
+msgid "New order"
+msgstr ""
+
+#: backend/view/main.php:234
+msgid "New customer"
+msgstr ""
+
+#: backend/view/main.php:235
+msgid "Order statuses"
+msgstr ""
+
+#: backend/view/main.php:237
+msgid "Status"
+msgstr ""
+
+#: backend/view/main.php:251
+msgid "Delete User"
+msgstr ""
+
+#: backend/view/main.php:257
+msgid "Save User Details"
+msgstr ""
+
+#: mobassistantconnector.php:617
+msgid "Please enable cURL library to use Push Notifications feature!"
+msgstr ""
+
+#: sa.php:1433
+msgid "Guest"
+msgstr ""
+
+#: sa.php:1594
+msgid "Customer note"
+msgstr ""
+
+#: sa.php:1596
+msgid "Private note"
+msgstr ""
+
+#: sa.php:1612
+msgid "Invalid order note ID"
+msgstr ""
+
+#: sa.php:1618
+msgid "An order note with the provided ID could not be found"
+msgstr ""
+
+#: sa.php:1659
+msgid "Grouped"
+msgstr ""
+
+#: sa.php:1662
+msgid "External/Affiliate"
+msgstr ""
+
+#: sa.php:1667
+msgid "Virtual"
+msgstr ""
+
+#: sa.php:1670
+msgid "Downloadable"
+msgstr ""
+
+#: sa.php:1673
+msgid "Simple"
+msgstr ""
+
+#: sa.php:1677
+msgid "Variable"
+msgstr ""
+
+#: sa.php:2337
+msgid "Published"
+msgstr ""
+
+#: sa.php:2340
+msgid "Scheduled"
+msgstr ""
+
+#: sa.php:2343
+msgid "Pending Review"
+msgstr ""
+
+#: sa.php:2346
+msgid "Draft"
+msgstr ""
+
+#: sa.php:2349
+msgid "private"
+msgstr ""
+
+#: sa.php:2352
+msgid "Trash"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Mobile Assistant Connector"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+#. Author URI of the plugin/theme
+msgid "http://woocommerce-manager.com"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"This plugin allows you to keep your online business under control wherever "
+"you are. All you need is just to have on hand your android mobile phone and "
+"Internet connection."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "eMagicOne"
+msgstr ""
