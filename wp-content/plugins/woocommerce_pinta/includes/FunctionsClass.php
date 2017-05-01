@@ -240,6 +240,7 @@ class FunctionsClass
         $fields = "SELECT
                     posts.ID AS id_order,
                     posts.post_date AS date_add,
+                    posts.post_date_gmt AS date_add_gmt,
                     meta_order_total.meta_value AS total_paid,
                     meta_order_currency.meta_value AS currency_code,
                     $status_code_field AS status_code,
@@ -285,17 +286,23 @@ class FunctionsClass
             $query_where_parts[] = " posts.post_status NOT IN ( '" . implode($this->status_list_hide, "', '") . "' )";
         }
 
+        /**
+         * ЗАГЛУШКА!!!
+         */
+//        $date_max = '2017-04-28 15:49:59 +0000';
+//        $date_min = '2017-04-24 15:49:59 +0000';
+
+        /**
+         * ЗАГЛУШКА!!!
+         */
         if ($date_min) {
-            $query_where_parts[] = sprintf(" UNIX_TIMESTAMP(posts.post_date) >= '%d' ",
-                strtotime($date_min));
+            $query_where_parts[] = sprintf(" (posts.post_date_gmt) >=  '%s' ",
+                date('Y-m-d H:i:s', strtotime($date_min)));
         }
-
         if ($date_max) {
-            $query_where_parts[] = sprintf(" UNIX_TIMESTAMP(posts.post_date) <= '%d' ",
-                strtotime($date_max));
+            $query_where_parts[] = sprintf(" (posts.post_date_gmt) <=  '%s' ",
+                date('Y-m-d H:i:s', strtotime($date_max)));
         }
-
-//        echo strtotime('2017-04-28 15:49:59 +0000');
 
         if ($fio) {
             $query_where_parts[] = sprintf(
@@ -312,13 +319,13 @@ class FunctionsClass
 
         if ($min_price) {
             $query_where_parts[] = sprintf(
-                " meta_order_total.meta_value > %s ",
+                " meta_order_total.meta_value > '%s' ",
                 $min_price
             );
         }
         if ($max_price) {
             $query_where_parts[] = sprintf(
-                " meta_order_total.meta_value < %s ",
+                " meta_order_total.meta_value < '%s' ",
                 $max_price
             );
         }
@@ -361,6 +368,7 @@ class FunctionsClass
 
         $order = [];
         $max_price = 0;
+//        var_dump($query); exit;
         $results = $wpdb->get_results($query, ARRAY_A);
         $orders_status = $this->get_orders_statuses();
         if ($results && is_array($results)):
