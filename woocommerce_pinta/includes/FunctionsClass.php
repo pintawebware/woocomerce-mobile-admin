@@ -283,7 +283,7 @@ class FunctionsClass
         $query_where_parts[] = " posts.post_type = 'shop_order' ";
 
         if (!empty($this->status_list_hide)) {
-            $query_where_parts[] = " posts.post_status NOT IN ( '" . implode($this->status_list_hide, "', '") . "' )";
+            $query_where_parts[] = " posts.post_status NOT IN ( '" . implode($this->status_list_hide, "', '") . "' ) ";
         }
 
         /**
@@ -297,11 +297,12 @@ class FunctionsClass
          */
         if ($date_min) {
             $query_where_parts[] = sprintf(" (posts.post_date_gmt) >=  '%s' ",
-                date('Y-m-d H:i:s', strtotime($date_min)));
+                $date_min);
         }
+//        var_dump($date_max); exit;
         if ($date_max) {
             $query_where_parts[] = sprintf(" (posts.post_date_gmt) <=  '%s' ",
-                date('Y-m-d H:i:s', strtotime($date_max)));
+                $date_max);
         }
 
         if ($fio) {
@@ -319,25 +320,20 @@ class FunctionsClass
 
         if ($min_price) {
             $query_where_parts[] = sprintf(
-                " meta_order_total.meta_value > '%s' ",
+                " meta_order_total.meta_value >= %s ",
                 $min_price
             );
         }
         if ($max_price) {
             $query_where_parts[] = sprintf(
-                " meta_order_total.meta_value < '%s' ",
-                $max_price
+                " meta_order_total.meta_value <= %s ",
+                (float) $max_price
             );
         }
-
-        if ($order_status_id && $this->isValidStatus($order_status_id)) {
-            if (function_exists('wc_get_order_status_name')) {
-                $query_where_parts[] = sprintf(" posts.post_status IN ('%s')",
-                    $order_status_id);
-            } else {
-                $query_where_parts[] = sprintf(" status_terms.slug IN ('%s')",
-                    $order_status_id);
-            }
+        if ($order_status_id) {
+                $query_where_parts[] = sprintf(" posts.post_status IN ('%s') ",
+                     $order_status_id
+                );
         }
 
         if ($order_id) {
@@ -367,9 +363,9 @@ class FunctionsClass
         $totals = $wpdb->get_row($query_totals, ARRAY_A);
 
         $order = [];
-        $max_price = 0;
-//        var_dump($query); exit;
+        $max_price_total = 0;
         $results = $wpdb->get_results($query, ARRAY_A);
+//        var_dump($query); exit;
         $orders_status = $this->get_orders_statuses();
         if ($results && is_array($results)):
             foreach ($results as $key => $result_order) {
@@ -388,19 +384,18 @@ class FunctionsClass
                 } else {
                     $order[$key]['order_id'] = (string)$result_order['id_order'];
 
-                    if ((float)$result_order['total_paid'] > (float) $max_price) $max_price = (float)$result_order['total_paid'];
+                    if ((float)$result_order['total_paid'] > (float) $max_price_total) $max_price_total = (float)$result_order['total_paid'];
                 }
             }
         endif;
         if ($order_id) return $order[0];
-
         return array(
             'orders' => $order,
             'statuses' => $orders_status,
             'currency_code' => get_woocommerce_currency(),
             'total_quantity' => (int) $totals['total_orders'],
             'total_sum' => (string)number_format(filterNull($totals['total_sales'], 0), 2, '.', ''),
-            'max_price' => (string)number_format((float)$max_price, 2, '.', ''),
+            'max_price' => (string)number_format((float)$max_price_total, 2, '.', ''),
         );
     }
 
