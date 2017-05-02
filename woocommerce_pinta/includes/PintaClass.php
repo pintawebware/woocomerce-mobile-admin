@@ -3,7 +3,6 @@
 include_once(WOOCOMMERCE_PINTA_DIR . 'includes/FunctionsClass.php');
 //require_once( dirname(__FILE__) . 'wp-load.php' );
 //require_once(dirname(WP_CONTENT_DIR) . "/wp-load.php");
-require_once(dirname(WP_CONTENT_DIR) . "/wp-includes/pluggable.php");
 
 register_deactivation_hook(__FILE__, array('ma_connector', 'woocommerce_pinta_deactivation'));
 
@@ -118,11 +117,11 @@ class PintaClass extends FunctionsClass
             echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Incorrect username or password', 'status' => false]);
             die;
         }
-
+        $os = $_REQUEST['device_token'] ? $_REQUEST['device_token'] : '';
         if (filterNull($_REQUEST['device_token'])) {
-            $devices = $this->getUserDevices($user['ID'], $_REQUEST['device_token']);
+            $devices = $this->getUserDevices($user['ID'], $_REQUEST['device_token'], $os);
             if (!$devices) {
-                $this->setUserDeviceToken($user['ID'], $_REQUEST['device_token']);
+                $this->setUserDeviceToken($user['ID'], $_REQUEST['device_token'], $os);
             }
         }
 

@@ -1255,19 +1255,31 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
         return $orders_total;
     }
 
-    protected function getUserDevices($user_id, $dev_token)
+    protected function getUserDevices($user_id, $dev_token, $os)
     {
         global $wpdb;
         $res = $wpdb->query(
             $wpdb->prepare("SELECT * 
                                       FROM {$wpdb->prefix}user_device 
                                       WHERE user_id=%s 
-                                      AND device_token=%s",
-                $user_id, $dev_token
+                                      AND device_token=%s
+                                      AND os_type=%s",
+                $user_id, $dev_token, $os
             )
         );
         return $res;
     }
+
+    public function getAllUserDevices()
+    {
+        global $wpdb;
+        $res = $wpdb->get_results("SELECT DISTINCT device_token, os_type 
+                                      FROM {$wpdb->prefix}user_device 
+                                      ", ARRAY_A
+        );
+        return $res;
+    }
+
 
     protected function setUserToken($id, $token)
     {
@@ -1333,7 +1345,7 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
         $plugin = isset($_REQUEST['plugin']) ? $_REQUEST['plugin'] : '';
         check_admin_referer("deactivate-plugin_{$plugin}");
 
-        remove_action('woocommerce_order_status_changed', 'pinta_push_change_status');
+//        remove_action('woocommerce_order_status_changed', 'pinta_push_change_status');
 
     }
 
@@ -1352,5 +1364,28 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
 # Раскомментируйте следующую строку, чтобы увидеть функцию в действии
 //exit( var_dump( $_GET ) );
     }
+
+
+    private function sendCurl($fields){
+        $API_ACCESS_KEY = 'AAAAlhKCZ7w:APA91bFe6-ynbVuP4ll3XBkdjar_qlW5uSwkT5olDc02HlcsEzCyGCIfqxS9JMPj7QeKPxHXAtgjTY89Pv1vlu7sgtNSWzAFdStA22Ph5uRKIjSLs5z98Y-Z2TCBN3gl2RLPDURtcepk';
+        $headers = array
+        (
+            'Authorization: key=' . $API_ACCESS_KEY,
+            'Content-Type: application/json'
+        );
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+        curl_exec($ch);
+        curl_close($ch);
+
+//        Mage::log('sendCurl($fields) is worked');
+    }
+
 
 }
