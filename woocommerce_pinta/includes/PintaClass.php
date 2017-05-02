@@ -591,7 +591,6 @@ class PintaClass extends FunctionsClass
 
         $orders = $this->getOrders();
 
-//        var_dump($this->getOrders());exit;
         echo json_encode(['response' => $orders, 'version' => self::PLUGIN_VERSION, 'status' => true]);
         die;
     }

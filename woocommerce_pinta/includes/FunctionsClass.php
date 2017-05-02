@@ -595,11 +595,15 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
             $result['quantity'] = (string)($allproductinfo->get_stock_quantity() ?
                 $allproductinfo->get_stock_quantity() : '0');
 
-            $result['description'] = $allproductinfo->get_description();
-//                # url картинки продукта
-//                $attachment_id = get_post_thumbnail_id($products["pr_id"]);
-//                $id_image = wp_get_attachment_image_src($attachment_id, 'thumbnail');
-//                $result['image'] = $id_image[0];
+            $descript = $allproductinfo->get_description();
+
+            $szSearchPattern = '~<img [^>]* />~';
+            preg_match_all( $szSearchPattern, $descript, $aPics );
+            if ($aPics) {
+                $descript = preg_replace("~<img [^>]* />~", "", $descript);
+            }
+            $result['description'] = $descript;
+
         endif;
 
         return $result;
