@@ -117,7 +117,7 @@ class PintaClass extends FunctionsClass
             echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Incorrect username or password', 'status' => false]);
             die;
         }
-        $os = $_REQUEST['device_token'] ? $_REQUEST['device_token'] : '';
+        $os = $_REQUEST['os_type'] ? $_REQUEST['os_type'] : '';
         if (filterNull($_REQUEST['device_token'])) {
             $devices = $this->getUserDevices($user['ID'], $_REQUEST['device_token'], $os);
             if (!$devices) {
