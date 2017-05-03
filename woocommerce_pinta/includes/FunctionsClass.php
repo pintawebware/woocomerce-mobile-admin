@@ -1366,7 +1366,7 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
     }
 
 
-    private function sendCurl($fields){
+    public function sendCurl($fields){
         $API_ACCESS_KEY = 'AAAAlhKCZ7w:APA91bFe6-ynbVuP4ll3XBkdjar_qlW5uSwkT5olDc02HlcsEzCyGCIfqxS9JMPj7QeKPxHXAtgjTY89Pv1vlu7sgtNSWzAFdStA22Ph5uRKIjSLs5z98Y-Z2TCBN3gl2RLPDURtcepk';
         $headers = array
         (
@@ -1384,7 +1384,7 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
         curl_exec($ch);
         curl_close($ch);
 
-//        Mage::log('sendCurl($fields) is worked');
+        return true;
     }
 
 

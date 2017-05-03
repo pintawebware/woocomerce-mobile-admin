@@ -105,10 +105,10 @@ function changeOrderStatus($orderID = 0, $statusID = 0, $comment = '', $inform =
 
 do_action( 'woocommerce_new_order', $order_id );// define the woocommerce_new_order callback
 function action_woocommerce_new_order( $order_id ) {
-    $order_info = $order_id ;
+
     $funclass = new FunctionsClass();
     $post_object = $funclass->getOrders($order_id);
-
+    if ($post_object):
     $msg['ios'] = [
         'body'       => $post_object['total'],
         'title'      => "http://" . $_SERVER['HTTP_HOST'],
@@ -136,13 +136,13 @@ function action_woocommerce_new_order( $order_id ) {
     ];
 
     $devices = $funclass->getAllUserDevices(); # отправляем на все девайсы????
-
+    if ($devices):
     foreach ( $devices as  $dev ):
         $os_type = $dev['os_type'];
         if (!array_key_exists($os_type, $msg))
             $os_type = 'android';
 
-        $this->sendCurl( [
+        $funclass->sendCurl( [
             'registration_ids' => $dev['device_token'],
             'notification'     => $msg[$os_type],
         ] );
@@ -152,6 +152,8 @@ function action_woocommerce_new_order( $order_id ) {
 //        ], true), FILE_APPEND);
 
     endforeach;
+    endif;
+    endif;
 
 };
 
