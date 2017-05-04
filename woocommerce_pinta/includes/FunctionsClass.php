@@ -56,7 +56,8 @@ class FunctionsClass
     protected function getOrderHistory($id)
     {
         global $wpdb;
-        $sql = "SELECT comment_date, comment_content FROM {$wpdb->comments} WHERE comment_post_ID = %s AND comment_type='order_note'";
+        $sql = "SELECT comment_date, comment_content FROM {$wpdb->comments} WHERE comment_post_ID = %s 
+            AND comment_type='order_note' ORDER BY comment_date DESC ";
         $sql = sprintf($sql, $id);
         $res = $wpdb->get_results($sql, ARRAY_A);
 
@@ -150,8 +151,7 @@ class FunctionsClass
                     shipping_address_1.meta_value as shipping_address_house,
                     shipping_address_2.meta_value as shipping_address_flat,
                     shipping_city.meta_value as shipping_city,
-                    shipping_country.meta_value as shipping_country
-                    
+                    shipping_country.meta_value as shipping_country                    
                     ";
 
         $sql = " FROM {$wpdb->posts} AS posts
@@ -504,6 +504,7 @@ class FunctionsClass
         if (!empty($query_where_parts)) {
             $query .= " WHERE " . implode(" AND ", $query_where_parts);
         }
+
 if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
         $query .= " ORDER BY ";
 
@@ -520,7 +521,7 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
                 break;
             case 'date_added':
                 $dir = $this->getSortDirection('DESC');
-                $sql .= " user_registered.user_registered " . $dir;
+                $query .= " user_registered.user_registered " . $dir;
                 break;
             case 'quantity':
                 $dir = $this->getSortDirection('DESC');

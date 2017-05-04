@@ -80,6 +80,7 @@ class PintaClass extends FunctionsClass
      * @apiParam {String} username User unique username.
      * @apiParam {Number} password User's  password.
      * @apiParam {String} device_token User's device's token for firebase notifications.
+     * @apiParam {String} os_type User's type of Operational system.
      *
      * @apiSuccess {Number} version  Current API version.
      * @apiSuccess {String} token  Token.
