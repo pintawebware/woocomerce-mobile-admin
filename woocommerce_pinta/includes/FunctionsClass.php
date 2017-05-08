@@ -1075,9 +1075,16 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
         }
         $result = $wpdb->get_row($query, ARRAY_A);
         if (!$result) $type = 'insert';
-
+        $flat = '';
         $addressExpl = explode(" ", $address);
-        $flat = array_pop($addressExpl);
+
+        if (!$city) {
+            $city = array_pop($addressExpl);
+        }
+
+        if (count($addressExpl) > 1) {
+            $flat = array_pop($addressExpl);
+        }
         $addressExpl = implode(' ', $addressExpl);
 
         $addr = [
@@ -1126,11 +1133,11 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
             $wpdb->query($updateStrStreet);
         endif;
 
-        if ($flat):
+//        if ($flat):
             $updateStrFl = sprintf($updateStr1,
                 $flat, '_shipping_address_2', $order_id);
             $wpdb->query($updateStrFl);
-        endif;
+//        endif;
 
         return true;
     }
