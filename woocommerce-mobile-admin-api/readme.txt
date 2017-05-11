@@ -29,20 +29,18 @@ Also you can see cancelled, delivered or processing order statuses to see how or
 Automatic installation is the easiest option as WordPress handles the file transfers itself and you don’t need to leave your web browser. To do an automatic install of Woocommerce mobile admin API, log in to your WordPress dashboard, navigate to the Plugins menu and click Add New.
 
 In the search field type “Woocommerce mobile admin API” and click Search Plugins. Once you’ve found our plugin you can view details about it such as the the point release, rating and description. Most importantly of course, you can install it by simply clicking “Install Now”.
-After that Install Woocommerce admin mobile app from Google Play and scan QR Code on Connector settings page using Mobile device to apply all settings.
+After that Install Woocommerce mobile admin app from Google Play or iTunes.
 
 == Updating ==
 
 Automatic updates should work like a charm; as always though, ensure you backup your site just in case.
-
-If on the off-chance you do encounter issues with the shop/category pages after an update you simply need to flush the permalinks by going to WordPress > Settings > Permalinks and hitting 'save'. That should return things to normal.
 
 
 == Frequently asked questions ==
 
 = Something goes wrong, how can I contact support? =
 
-Free support is provided via e-mail - v.grishko@pinta.com.ua
+Free support is provided via e-mail - info@wordpressapp.pro
 
 
 == Screenshots ==
