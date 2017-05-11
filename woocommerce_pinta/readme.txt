@@ -1,1 +1,0 @@
-=== WOOCOMMERCE PINTA ===
