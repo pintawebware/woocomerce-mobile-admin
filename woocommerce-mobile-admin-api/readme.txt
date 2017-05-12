@@ -1,6 +1,6 @@
-=== Woocommerce mobile admin API ===
+﻿=== Woocommerce mobile admin API ===
 Contributors: pintawebware
-Donate link: http://example.com/
+Donate link: https://github.com/pintawebware/woocomerce-mobile-admin/raw/master/woocommerce-mobile-admin-api.zip
 Tags: woocommerce, android, ios, mobile, shop, sales, assistant, business, control, statistics, reports, tracker
 Requires at least: 4.7.3
 Tested up to: 4.7.3
