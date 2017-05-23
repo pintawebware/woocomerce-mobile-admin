@@ -141,7 +141,7 @@ function action_woocommerce_new_order( $order_id ) {
     foreach ( $devices as  $dev ):
         $ids[$dev['os_type']][] = $dev['device_token'];
     endforeach;
-
+        if ($ids):
         foreach ( $ids as  $key => $dev ):
 
             if (array_key_exists($key, $msg)):
@@ -151,6 +151,7 @@ function action_woocommerce_new_order( $order_id ) {
                 ] );
             endif;;
         endforeach;
+        endif;
     endif;
     endif;
 

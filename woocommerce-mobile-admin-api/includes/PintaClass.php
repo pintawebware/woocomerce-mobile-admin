@@ -8,7 +8,7 @@ register_deactivation_hook(__FILE__, array('ma_connector', 'woocommerce_pinta_de
 
 class PintaClass extends FunctionsClass
 {
-    const PLUGIN_VERSION = '1';
+    const PLUGIN_VERSION = '1.0.1';
     const HASH_ALGORITHM = 'sha256';
 
     public function __construct()
@@ -65,6 +65,15 @@ class PintaClass extends FunctionsClass
                 break;
             case 'orderhistory':
                 $this->orderhistory();
+                break;
+            case 'сhangequantity':
+                $this->сhangeQuantity();
+                break;
+            case 'updateproduct':
+                $this->updateProduct();
+                break;
+            case 'addproduct':
+                $this->addProduct();
                 break;
             default:
                 break;
@@ -378,6 +387,7 @@ class PintaClass extends FunctionsClass
                     for ($i = 1; $i <= 7; $i++) {
                         $b = 0;
                         $o = 0;
+                        if($clients['user_registered']):
                         foreach ($clients['user_registered'] as $value) {
                             $date = strtotime($value);
 
@@ -387,9 +397,10 @@ class PintaClass extends FunctionsClass
                                 $b = $b + 1;
                             }
                         }
+                        endif;
 
                         $clients_for_time[] = $b;
-
+                        if ($orders['order_date']):
                         foreach ($orders['order_date'] as $val) {
 
                             $day = strtotime($val);
@@ -399,6 +410,7 @@ class PintaClass extends FunctionsClass
                                 $o = $o + 1;
                             }
                         }
+                        endif;
                         $orders_for_time[] = $o;
                     }
                     break;
@@ -407,6 +419,7 @@ class PintaClass extends FunctionsClass
                     for ($i = 1; $i <= 30; $i++) {
                         $b = 0;
                         $o = 0;
+                        if ($clients['user_registered']):
                         foreach ($clients['user_registered'] as $value) {
 
                             $day = strtotime($value);
@@ -416,8 +429,10 @@ class PintaClass extends FunctionsClass
                                 $b = $b + 1;
                             }
                         }
+                        endif;
                         $clients_for_time[] = $b;
 
+                        if($orders['order_date'] ):
                         foreach ($orders['order_date'] as $value) {
 
                             $day = strtotime($value);
@@ -427,6 +442,7 @@ class PintaClass extends FunctionsClass
                                 $o = $o + 1;
                             }
                         }
+                        endif;
                         $orders_for_time[] = $o;
                     }
                     break;
@@ -436,6 +452,7 @@ class PintaClass extends FunctionsClass
                     for ($i = 1; $i <= 12; $i++) {
                         $b = 0;
                         $o = 0;
+                        if($clients['user_registered']):
                         foreach ($clients['user_registered'] as $value) {
 
                             $date = strtotime($value);
@@ -446,8 +463,10 @@ class PintaClass extends FunctionsClass
                                 $b = $b + 1;
                             }
                         }
+                        endif;
                         $clients_for_time[] = $b;
 
+                        if ($orders['order_date']):
                         foreach ($orders['order_date'] as $val) {
 
                             $day = strtotime($val);
@@ -457,6 +476,7 @@ class PintaClass extends FunctionsClass
                                 $o = $o + 1;
                             }
                         }
+                        endif;
                         $orders_for_time[] = $o;
                     }
 
@@ -941,6 +961,10 @@ class PintaClass extends FunctionsClass
      * @apiSuccess {Number} quantity  Actual quantity of the product.
      * @apiSuccess {String} description     Detail description of the product.
      * @apiSuccess {Array} images  Array of the images of the product.
+     * @apiSuccess {String} sku  sku of product.
+     * @apiSuccess {String} stock_status  status of product stock.
+     * @apiSuccess {String} status  status of product. (is published)
+     *
      *
      * @apiSuccessExample Success-Response:
      *     HTTP/1.1 200 OK
@@ -960,7 +984,10 @@ class PintaClass extends FunctionsClass
      *           "http://site-url/image/catalog/demo/htc_iPhone_1.jpg",
      *           "http://site-url/image/catalog/demo/htc_iPhone_2.jpg",
      *           "http://site-url/image/catalog/demo/htc_iPhone_3.jpg"
-     *       ]
+     *       ],
+     *       "sku" : "ar123",
+     *        "stock_status" : "instock",
+     *        "status" : "published"
      *   },
      *   "Status" : true,
      *   "version": 1.0
@@ -1392,8 +1419,8 @@ class PintaClass extends FunctionsClass
 
         $response = [];
         if (!$customer_orders || isset($customer_orders['error'])){
-                echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => isset($customer_orders['error']) ? $customer_orders['error'] : 'Customer hasn\'t any orders', 'status' => false]);
-                die;
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => isset($customer_orders['error']) ? $customer_orders['error'] : 'Customer hasn\'t any orders', 'status' => false]);
+            die;
         }
 
         if ($customer_orders):
@@ -1521,5 +1548,219 @@ class PintaClass extends FunctionsClass
             'status' => true]);
         die;
     }
+
+    /**
+     * @api {get} index.php?route=сhangequantity  сhangeQuantity
+     * @apiName сhangeQuantity
+     * @apiGroup All
+     *
+     * @apiParam {Number} new_quantity new quantity of products.
+     * @apiParam {Number} product_id unique product ID.
+     * @apiParam {Token} token your unique token.
+     *
+     * @apiSuccess {Number} version  Current API version.
+     * @apiSuccess {Boolean} status  true.
+     *
+     * @apiSuccessExample Success-Response:
+     *     HTTP/1.1 200 OK
+     *   {
+     *       "version": 1.0,
+     *       "status": true,
+     *   }
+     *
+     * @apiErrorExample Error-Response:
+     *
+     *     {
+     *       "error": "Missing some params",
+     *       "version": 1.0,
+     *       "Status" : false
+     *     }
+     *
+     *
+     */
+
+    public function сhangeQuantity()
+    {
+
+        $error = $this->valid();
+        if ($error) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => $error, 'status' => false]);
+            die;
+        }
+
+        if (!$_REQUEST['product_id'] || !$_REQUEST['new_quantity']) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Missing some params', 'status' => false]);
+            die;
+        }
+
+        $pr_id = $_REQUEST['product_id'];
+        $new_qu = $_REQUEST['new_quantity'];
+        if (!((float)$new_qu) || !((int)$pr_id)) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'No valid data. Correct your data and try again.', 'status' => false]);
+            die;
+        }
+
+        $result = $this->setNewProductStock($pr_id, $new_qu);
+
+        if (!$result) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Can\'t find product or data didn\'t change or any another error. Try again later.', 'status' => false]);
+            die;
+        }
+
+
+        echo json_encode([
+            'version' => self::PLUGIN_VERSION,
+            'status' => true]);
+        die;
+
+    }
+
+
+    /**
+     * @api {get} index.php?route=updateproduct  updateProduct
+     * @apiName updateProduct
+     * @apiGroup All
+     *
+     *
+     * @apiParam {Token} token your unique token.
+     * @apiParam {Number} product_id unique product ID. (post_id wp_posts)
+     * @apiParam {Number} quantity quantity of products (_stock wp_postmeta)
+     * @apiParam {Array} photos массив фоток (три массива приходят от мобильщиков, массив новых, массив для удаления и main image) (_product_image_gallery,)
+     * @apiParam {String} name product name.(post_title in wp_posts)
+     * @apiParam {String} short_description short product description. (post_excerpt in wp_posts)
+     * @apiParam {String} full_description full product description. (post_content in wp_posts)
+     * @apiParam {String} model model of Product.
+     * @apiParam {String} sku sku of Product (_sku wp_postmeta). (артикул)
+     * @apiParam {String} stock_status stock status of Product (_stock_status = instock wp_postmeta). Subtract Stock  (в наличии)
+     * @apiParam {String} status  Product status (is publish?)
+     *
+     * @apiSuccess {Number} version  Current API version.
+     * @apiSuccess {Boolean} status  true.
+     *
+     * @apiSuccessExample Success-Response:
+     *     HTTP/1.1 200 OK
+     *   {
+     *       "version": 1.0,
+     *       "status": true,
+     *   }
+     *
+     * @apiErrorExample Error-Response:
+     *
+     *     {
+     *       "error": "Missing some params",
+     *       "version": 1.0,
+     *       "Status" : false
+     *     }
+     *
+     *
+     */
+
+    public function updateProduct()
+    {
+        $error = $this->valid();
+        if ($error) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => $error, 'status' => false]);
+            die;
+        }
+
+        if (!$_REQUEST['product_id']) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Missing some params', 'status' => false]);
+            die;
+        }
+
+        $pr_id = $_REQUEST['product_id'];
+
+        if (!((int)$pr_id)) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'No valid data. Correct your data and try again.', 'status' => false]);
+            die;
+        }
+
+        $result = $this->updateProductInfo();
+
+        if (!$result) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Can\'t find product or data didn\'t change or any another error. Try again later.', 'status' => false]);
+            die;
+        }
+
+        echo json_encode([
+            'version' => self::PLUGIN_VERSION,
+            'status' => true]);
+        die;
+    }
+
+
+
+    /**
+     * @api {get} index.php?route=addproduct  addProduct
+     * @apiName addProduct
+     * @apiGroup All
+     *
+     * @apiParam {Token} token your unique token.
+     *
+     * @apiParam {String} title The title of Product
+     * @apiParam {Number} regular_price  Price of the product.
+     * @apiParam {Number} sale_price  Sale price of the product.
+     * @apiParam {String} currency_code  Default currency of the shop.
+     * @apiParam {Number} quantity  Actual quantity of the product.
+     * @apiParam {String} short_description  Short description of the product.
+     * @apiParam {String} full_description  Detail description of the product.
+     * @apiParam {Array} images  Array of the images of the product.
+     * @apiParam {String} sku  sku of product.(артикул)
+     * @apiParam {String} stock_status  status of product stock.
+     * @apiParam {String} status  status of product. (is published)
+     * @apiParam {String} main_img  main image of product.
+     *
+     *
+     * @apiSuccess {Number} version  Current API version.
+     * @apiSuccess {Boolean} status  true.
+     *
+     * @apiSuccessExample Success-Response:
+     *     HTTP/1.1 200 OK
+     *   {
+     *       "version": 1.0,
+     *       "status": true,
+     *       "response":
+     *   {
+     *         "product_id" : "88",
+     *   }
+     *
+     * @apiErrorExample Error-Response:
+     *
+     *     {
+     *       "error": "Missing some params",
+     *       "version": 1.0,
+     *       "Status" : false
+     *     }
+     *
+     *
+     */
+
+    public function addProduct()
+    {
+        $error = $this->valid();
+        if ($error) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => $error, 'status' => false]);
+            die;
+        }
+
+        if (!$_REQUEST['title']) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Missing some params', 'status' => false]);
+            die;
+        }
+
+        $result = $this->addNewProduct();
+
+        if (!$result) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Can\'t find product or data didn\'t change or any another error. Try again later.', 'status' => false]);
+            die;
+        }
+
+        echo json_encode([
+            'response' => ['product_id' => $result],
+            'version' => self::PLUGIN_VERSION,
+            'status' => true]);
+        die;
+    }
+
 
 }
