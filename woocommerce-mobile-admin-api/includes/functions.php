@@ -59,8 +59,6 @@ function changeOrderStatus($orderID = 0, $statusID = 0, $comment = '', $inform =
     $post_object = get_post($orderID);
     $old_status = $post_object->post_status;
 
-//    if ($old_status == $statusID  && !$comment) return false;
-
     if ($old_status !== $statusID || $comment) :
         $post = [
             'ID' => $orderID,
@@ -89,7 +87,7 @@ function changeOrderStatus($orderID = 0, $statusID = 0, $comment = '', $inform =
 
             $admin_email = 'v.grishko@pinta.com.ua';
             $message_headers = "From: \"{$from_name}\" <{$admin_email}>\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n";
-//
+
             $subject = 'Статус Вашего заказа изменился';
             $message = 'Уважаемый(-ая) ' . $orderinfo['fio'] . '!' .
                 ' '. $comment . ' ' . sprintf('Статус Вашего заказа изменен с %s на %s.', get_order_statuses()[$old_status],
@@ -124,7 +122,7 @@ function action_woocommerce_new_order( $order_id ) {
         ],
         'event_type' => 'new_order'
     ];
-//                Mage::log('$msg is complete in foreach ($order as $item)');
+
     $msg['android'] = [
         'new_order'  => [
             'order_id'      => $order_id,

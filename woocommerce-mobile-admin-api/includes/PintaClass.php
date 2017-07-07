@@ -1,14 +1,12 @@
 <?php
 
 include_once(WOOCOMMERCE_PINTA_DIR . 'includes/FunctionsClass.php');
-//require_once( dirname(__FILE__) . 'wp-load.php' );
-//require_once(dirname(WP_CONTENT_DIR) . "/wp-load.php");
 
 register_deactivation_hook(__FILE__, array('ma_connector', 'woocommerce_pinta_deactivation'));
 
 class PintaClass extends FunctionsClass
 {
-    const PLUGIN_VERSION = '1.0.1';
+    const PLUGIN_VERSION = '2.0';
     const HASH_ALGORITHM = 'sha256';
 
     public function __construct()
@@ -72,8 +70,17 @@ class PintaClass extends FunctionsClass
             case 'updateproduct':
                 $this->updateProduct();
                 break;
-            case 'addproduct':
-                $this->addProduct();
+            case 'mainimage':
+                $this->setMainImage();
+                break;
+            case 'getsubstatus':
+                $this->getSubstatus();
+                break;
+            case 'getcategories':
+                $this->getCategories();
+                break;
+            case 'deleteimage':
+                $this->deleteImage();
                 break;
             default:
                 break;
@@ -85,6 +92,7 @@ class PintaClass extends FunctionsClass
      * @api {post} index.php?route=login  Login
      * @apiName Login
      * @apiGroup All
+     * @apiVersion 1.0.0
      *
      * @apiParam {String} username User unique username.
      * @apiParam {Number} password User's  password.
@@ -100,17 +108,17 @@ class PintaClass extends FunctionsClass
      *       "response":
      *       {
      *          "token": "e9cf23a55429aa79c3c1651fe698ed7b",
-     *          "version": 1.0,
      *       },
      *       "status": true
+     *       "version": 2.0,
      *   }
      *
      * @apiErrorExample Error-Response:
      *
      *     {
      *       "error": "Incorrect username or password",
-     *       "version": 1.0,
-     *       "Status" : false
+     *       "version": 2.0,
+     *       "status" : false
      *     }
      *
      */
@@ -155,6 +163,7 @@ class PintaClass extends FunctionsClass
      * @api {post} index.php?route=deletedevicetoken  deleteUserDeviceToken
      * @apiName deleteUserDeviceToken
      * @apiGroup All
+     * @apiVersion 1.0.0
      *
      * @apiParam {String} old_token User's device's token for firebase notifications.
      *
@@ -164,7 +173,7 @@ class PintaClass extends FunctionsClass
      * @apiSuccessExample Success-Response:
      *     HTTP/1.1 200 OK
      *   {
-     *       "version": 1.0,
+     *       "version": 2.0,
      *       "status": true,
      *   }
      *
@@ -172,7 +181,7 @@ class PintaClass extends FunctionsClass
      *
      *     {
      *       "error": "Missing some params",
-     *       "version": 1.0,
+     *       "version": 2.0,
      *       "Status" : false
      *     }
      *
@@ -219,6 +228,7 @@ class PintaClass extends FunctionsClass
      * @api {post} index.php?route=updatedevicetoken  updateUserDeviceToken
      * @apiName updateUserDeviceToken
      * @apiGroup All
+     * @apiVersion 1.0.0
      *
      * @apiParam {String} new_token User's device's new token for firebase notifications.
      * @apiParam {String} old_token User's device's old token for firebase notifications.
@@ -230,14 +240,14 @@ class PintaClass extends FunctionsClass
      *     HTTP/1.1 200 OK
      *   {
      *       "status": true,
-     *       "version": 1.0
+     *       "version": 2.0
      *   }
      *
      * @apiErrorExample Error-Response:
      *
      *     {
      *       "error": "Missing some params",
-     *       "version": 1.0,
+     *       "version": 2.0,
      *       "Status" : false
      *     }
      *
@@ -265,6 +275,7 @@ class PintaClass extends FunctionsClass
      * @api {get} index.php?route=statistic  getDashboardStatistic
      * @apiName getDashboardStatistic
      * @apiGroup All
+     * @apiVersion 1.0.0
      *
      * @apiParam {String} filter Period for filter(day/week/month/year).
      * @apiParam {Token} token your unique token.
@@ -317,14 +328,14 @@ class PintaClass extends FunctionsClass
      *              "clients_total": "3"
      *           },
      *           "status": true,
-     *           "version": 1.0
+     *           "version": 2.0
      *  }
      *
      * @apiErrorExample Error-Response:
      *
      *     {
      *       "error": "Unknown filter set",
-     *       "version": 1.0,
+     *       "version": 2.0,
      *       "Status" : false
      *     }
      *
@@ -387,29 +398,29 @@ class PintaClass extends FunctionsClass
                     for ($i = 1; $i <= 7; $i++) {
                         $b = 0;
                         $o = 0;
-                        if($clients['user_registered']):
-                        foreach ($clients['user_registered'] as $value) {
-                            $date = strtotime($value);
+                        if ($clients['user_registered']):
+                            foreach ($clients['user_registered'] as $value) {
+                                $date = strtotime($value);
 
-                            $f = date("N", $date);
+                                $f = date("N", $date);
 
-                            if ($f == $i) {
-                                $b = $b + 1;
+                                if ($f == $i) {
+                                    $b = $b + 1;
+                                }
                             }
-                        }
                         endif;
 
                         $clients_for_time[] = $b;
                         if ($orders['order_date']):
-                        foreach ($orders['order_date'] as $val) {
+                            foreach ($orders['order_date'] as $val) {
 
-                            $day = strtotime($val);
-                            $day = date("N", $day);
+                                $day = strtotime($val);
+                                $day = date("N", $day);
 
-                            if ($day == $i) {
-                                $o = $o + 1;
+                                if ($day == $i) {
+                                    $o = $o + 1;
+                                }
                             }
-                        }
                         endif;
                         $orders_for_time[] = $o;
                     }
@@ -420,28 +431,28 @@ class PintaClass extends FunctionsClass
                         $b = 0;
                         $o = 0;
                         if ($clients['user_registered']):
-                        foreach ($clients['user_registered'] as $value) {
+                            foreach ($clients['user_registered'] as $value) {
 
-                            $day = strtotime($value);
-                            $day = date("d", $day);
+                                $day = strtotime($value);
+                                $day = date("d", $day);
 
-                            if ($day == $i) {
-                                $b = $b + 1;
+                                if ($day == $i) {
+                                    $b = $b + 1;
+                                }
                             }
-                        }
                         endif;
                         $clients_for_time[] = $b;
 
-                        if($orders['order_date'] ):
-                        foreach ($orders['order_date'] as $value) {
+                        if ($orders['order_date']):
+                            foreach ($orders['order_date'] as $value) {
 
-                            $day = strtotime($value);
-                            $day = date("d", $day);
+                                $day = strtotime($value);
+                                $day = date("d", $day);
 
-                            if ($day == $i) {
-                                $o = $o + 1;
+                                if ($day == $i) {
+                                    $o = $o + 1;
+                                }
                             }
-                        }
                         endif;
                         $orders_for_time[] = $o;
                     }
@@ -452,30 +463,30 @@ class PintaClass extends FunctionsClass
                     for ($i = 1; $i <= 12; $i++) {
                         $b = 0;
                         $o = 0;
-                        if($clients['user_registered']):
-                        foreach ($clients['user_registered'] as $value) {
+                        if ($clients['user_registered']):
+                            foreach ($clients['user_registered'] as $value) {
 
-                            $date = strtotime($value);
+                                $date = strtotime($value);
 
-                            $f = date("m", $date);
+                                $f = date("m", $date);
 
-                            if ($f == $i) {
-                                $b = $b + 1;
+                                if ($f == $i) {
+                                    $b = $b + 1;
+                                }
                             }
-                        }
                         endif;
                         $clients_for_time[] = $b;
 
                         if ($orders['order_date']):
-                        foreach ($orders['order_date'] as $val) {
+                            foreach ($orders['order_date'] as $val) {
 
-                            $day = strtotime($val);
-                            $day = date("m", $day);
+                                $day = strtotime($val);
+                                $day = date("m", $day);
 
-                            if ($day == $i) {
-                                $o = $o + 1;
+                                if ($day == $i) {
+                                    $o = $o + 1;
+                                }
                             }
-                        }
                         endif;
                         $orders_for_time[] = $o;
                     }
@@ -485,19 +496,19 @@ class PintaClass extends FunctionsClass
                     break;
             }
 
-            $data['xAxis'] =  $hours;
-            $data['clients'] =  $clients_for_time;
-            $data['orders'] =  $orders_for_time;
+            $data['xAxis'] = $hours;
+            $data['clients'] = $clients_for_time;
+            $data['orders'] = $orders_for_time;
 
             $sale_total = $this->getTotalOrders('totalsum');
 
-            $data['currency_code'] =  get_woocommerce_currency();
-            $data['total_sales'] = (string) number_format($sale_total['total_sales'], 2, '.', '');
+            $data['currency_code'] = get_woocommerce_currency();
+            $data['total_sales'] = (string)number_format($sale_total['total_sales'], 2, '.', '');
             $sale_year_total = $this->getTotalOrders(['filter' => 'this_year']);
-            $data['sale_year_total'] = (string) number_format($sale_year_total['total_sales'], 2, '.', '');
+            $data['sale_year_total'] = (string)number_format($sale_year_total['total_sales'], 2, '.', '');
 
-            $data['orders_total'] = (string) $sale_total['count_orders'];
-            $data['clients_total'] = (string) $this->getTotalCustomers('totalsum')['count_customers'];
+            $data['orders_total'] = (string)$sale_total['count_orders'];
+            $data['clients_total'] = (string)$this->getTotalCustomers('totalsum')['count_customers'];
 
             echo json_encode(['version' => self::PLUGIN_VERSION, 'response' => $data, 'status' => true]);
             die;
@@ -512,6 +523,7 @@ class PintaClass extends FunctionsClass
      * @api {get} index.php?route=orders  getOrders
      * @apiName GetOrders
      * @apiGroup All
+     * @apiVersion 1.0.0
      *
      * @apiParam {Token} token your unique token.
      * @apiParam {Number} page number of the page.
@@ -542,59 +554,103 @@ class PintaClass extends FunctionsClass
      * @apiSuccessExample Success-Response:
      *     HTTP/1.1 200 OK
      * {
-     *   "Response"
-     *   {
-     *      "orders":
-     *      {
-     *            {
-     *             "order_id" : "1",
-     *             "order_number" : "1",
-     *             "fio" : "Anton Kiselev",
-     *             "status" : "Сделка завершена",
-     *             "total" : "106.00",
-     *             "date_added" : "2016-12-09 16:17:02",
-     *             "currency_code": "RUB"
-     *             },
-     *            {
-     *             "order_id" : "2",
-     *             "order_number" : "2",
-     *             "fio" : "Vlad Kochergin",
-     *             "status" : "В обработке",
-     *             "total" : "506.00",
-     *             "date_added" : "2016-10-19 16:00:00",
-     *             "currency_code": "RUB"
-     *             }
-     *       },
-     *       "statuses" :
-     *       {
-     *             {
-     *              "name": "Отменено",
-     *              "order_status_id": "7",
-     *              "language_id": "1"
-     *              },
-     *             {
-     *              "name": "Сделка завершена",
-     *              "order_status_id": "5",
-     *              "language_id": "1"
-     *              },
-     *              {
-     *               "name": "Ожидание",
-     *               "order_status_id": "1",
-     *               "language_id": "1"
-     *               }
-     *       },
-     *       "currency_code": "RUB",
-     *       "total_quantity": 50,
-     *       "total_sum": "2026.00",
-     *       "max_price": "1405.00"
-     *   },
-     *   "Status" : true,
-     *   "version": 1.0
+     * "response": {
+     * "orders": [
+     * {
+     * "order_number": "34",
+     * "currency_code": "UAH",
+     * "date_added": "2017-05-03 10:24:12",
+     * "fio": "Вася Пупкин",
+     * "total": "99.00",
+     * "status": "Обработка",
+     * "order_id": "34"
+     * },
+     * {
+     * "order_number": "33",
+     * "currency_code": "UAH",
+     * "date_added": "2017-05-03 10:18:29",
+     * "fio": "Вася Пупкин",
+     * "total": "315.00",
+     * "status": "Обработка",
+     * "order_id": "33"
+     * },
+     * {
+     * "order_number": "32",
+     * "currency_code": "UAH",
+     * "date_added": "2017-05-03 10:11:47",
+     * "fio": "Вася Пупкин",
+     * "total": "315.00",
+     * "status": "Обработка",
+     * "order_id": "32"
+     * },
+     * {
+     * "order_number": "31",
+     * "currency_code": "UAH",
+     * "date_added": "2017-05-03 10:00:13",
+     * "fio": "Вася Пупкин",
+     * "total": "198.00",
+     * "status": "Обработка",
+     * "order_id": "31"
+     * },
+     * {
+     * "order_number": "30",
+     * "currency_code": "UAH",
+     * "date_added": "2017-04-28 11:37:34",
+     * "fio": "User3Name User3Surname",
+     * "total": "1044.00",
+     * "status": "Обработка",
+     * "order_id": "30"
+     * }
+     * ],
+     * "statuses": [
+     * {
+     * "order_status_id": "wc-pending",
+     * "name": "В ожидании оплаты",
+     * "language_id": 1
+     * },
+     * {
+     * "order_status_id": "wc-processing",
+     * "name": "Обработка",
+     * "language_id": 1
+     * },
+     * {
+     * "order_status_id": "wc-on-hold",
+     * "name": "На удержании",
+     * "language_id": 1
+     * },
+     * {
+     * "order_status_id": "wc-completed",
+     * "name": "Выполнен",
+     * "language_id": 1
+     * },
+     * {
+     * "order_status_id": "wc-cancelled",
+     * "name": "Отменен",
+     * "language_id": 1
+     * },
+     * {
+     * "order_status_id": "wc-refunded",
+     * "name": "Возвращён",
+     * "language_id": 1
+     * },
+     * {
+     * "order_status_id": "wc-failed",
+     * "name": "Не удался",
+     * "language_id": 1
+     * }
+     * ],
+     * "currency_code": "UAH",
+     * "total_quantity": 15,
+     * "total_sum": "29088.00",
+     * "max_price": "1044.00"
+     * },
+     * "version": "2.0",
+     * "status": true
      * }
      * @apiErrorExample Error-Response:
      *
      * {
-     *      "version": 1.0,
+     *      "version": 2.0,
      *      "Status" : false
      *
      * }
@@ -619,6 +675,7 @@ class PintaClass extends FunctionsClass
      * @api {get} index.php?route=getorderinfo  getOrderInfo
      * @apiName getOrderInfo
      * @apiGroup All
+     * @apiVersion 1.0.0
      *
      * @apiParam {Number} order_id unique order ID.
      * @apiParam {Token} token your unique token.
@@ -667,14 +724,14 @@ class PintaClass extends FunctionsClass
      *                    }
      *          },
      *      "status" : true,
-     *      "version": 1.0
+     *      "version": 2.0
      * }
      *
      * @apiErrorExample Error-Response:
      *
      *     {
      *       "error" : "Can not found order with id = 5",
-     *       "version": 1.0,
+     *       "version": 2.0,
      *       "Status" : false
      *     }
      */
@@ -713,6 +770,7 @@ class PintaClass extends FunctionsClass
      * @api {get} index.php?route=orderproducts  getOrderProducts
      * @apiName getOrderProducts
      * @apiGroup All
+     * @apiVersion 1.0.0
      *
      * @apiParam {Token} token your unique token.
      * @apiParam {ID} order_id unique order id.
@@ -721,7 +779,6 @@ class PintaClass extends FunctionsClass
      * @apiSuccess {Url} image  Picture of the product.
      * @apiSuccess {Number} quantity  Quantity of the product.
      * @apiSuccess {String} name     Name of the product.
-     * @apiSuccess {String} model  Model of the product.
      * @apiSuccess {Number} Price  Price of the product.
      * @apiSuccess {Number} total_order_price  Total sum of the order.
      * @apiSuccess {Number} total_price  Sum of product's prices.
@@ -739,7 +796,6 @@ class PintaClass extends FunctionsClass
      *              {
      *                  "image" : "http://opencart/image/catalog/demo/htc_touch_hd_1.jpg",
      *                  "name" : "HTC Touch HD",
-     *                  "model" : "Product 1",
      *                  "quantity" : 3,
      *                  "price" : 100.00,
      *                  "product_id" : 90,
@@ -749,7 +805,6 @@ class PintaClass extends FunctionsClass
      *              {
      *                  "image" : "http://opencart/image/catalog/demo/iphone_1.jpg",
      *                  "name" : "iPhone",
-     *                  "model" : "Product 11",
      *                  "quantity" : 1,
      *                  "price" : 500.00,
      *                  "product_id" : 97,
@@ -761,14 +816,14 @@ class PintaClass extends FunctionsClass
      *              {
      *                   "total_discount": 0,
      *                   "total_price": 2250,
-     *                     "currency_code": "RUB",
+     *                   "currency_code": "RUB",
      *                   "shipping_price": 35,
      *                   "total": 2285
      *               }
      *
      *         },
      *      "status": true,
-     *      "version": 1.0
+     *      "version": 2.0
      * }
      *
      *
@@ -776,7 +831,7 @@ class PintaClass extends FunctionsClass
      *
      *     {
      *          "error": "Can not found any products in order with id = 10",
-     *          "version": 1.0,
+     *          "version": 2.0,
      *          "Status" : false
      *     }
      *
@@ -812,6 +867,7 @@ class PintaClass extends FunctionsClass
      * @api {get} index.php?route=paymentanddelivery  getOrderPaymentAndDelivery
      * @apiName getOrderPaymentAndDelivery
      * @apiGroup All
+     * @apiVersion 1.0.0
      *
      * @apiParam {Number} order_id unique order ID.
      * @apiParam {Token} token your unique token.
@@ -832,13 +888,13 @@ class PintaClass extends FunctionsClass
      *                  "shipping_address" : "проспект Карла Маркса 1, Днепропетровск, Днепропетровская область, Украина."
      *              },
      *          "status": true,
-     *          "version": 1.0
+     *          "version": 2.0
      *      }
      * @apiErrorExample Error-Response:
      *
      *    {
      *      "error": "Can not found order with id = 90",
-     *      "version": 1.0,
+     *      "version": 2.0,
      *      "Status" : false
      *   }
      *
@@ -874,6 +930,7 @@ class PintaClass extends FunctionsClass
      * @api {get} index.php?route=products  getProductsList
      * @apiName getProductsList
      * @apiGroup All
+     * @apiVersion 2.0.0
      *
      * @apiParam {Token} token your unique token.
      * @apiParam {Number} page number of the page.
@@ -882,7 +939,6 @@ class PintaClass extends FunctionsClass
      *
      * @apiSuccess {Number} version  Current API version.
      * @apiSuccess {Number} product_id  ID of the product.
-     * @apiSuccess {String} model     Model of the product.
      * @apiSuccess {String} name  Name of the product.
      * @apiSuccess {String} currency_code  Default currency of the shop.
      * @apiSuccess {Number} price  Price of the product.
@@ -899,7 +955,6 @@ class PintaClass extends FunctionsClass
      *      {
      *           {
      *             "product_id" : "1",
-     *             "model" : "Black",
      *             "name" : "HTC Touch HD",
      *             "price" : "100.00",
      *             "currency_code": "UAH",
@@ -918,12 +973,12 @@ class PintaClass extends FunctionsClass
      *      }
      *   },
      *   "Status" : true,
-     *   "version": 1.0
+     *   "version": 2.0
      * }
      * @apiErrorExample Error-Response:
      * {
      *      "Error" : "Not one product not found",
-     *      "version": 1.0,
+     *      "version": 2.0,
      *      "Status" : false
      * }
      *
@@ -948,57 +1003,113 @@ class PintaClass extends FunctionsClass
      * @api {get} index.php?route=productinfo  getProductInfo
      * @apiName getProductInfo
      * @apiGroup All
+     * @apiVersion 2.0.0
      *
      * @apiParam {Token} token your unique token.
      * @apiParam {Number} product_id unique product ID.
      *
      * @apiSuccess {Number} version  Current API version.
      * @apiSuccess {Number} product_id  ID of the product.
-     * @apiSuccess {String} model     Model of the product.
      * @apiSuccess {String} name  Name of the product.
      * @apiSuccess {Number} price  Price of the product.
      * @apiSuccess {String} currency_code  Default currency of the shop.
      * @apiSuccess {Number} quantity  Actual quantity of the product.
      * @apiSuccess {String} description     Detail description of the product.
-     * @apiSuccess {Array} images  Array of the images of the product.
+     * @apiSuccess {Array}  images Array of the images of the product.
      * @apiSuccess {String} sku  sku of product.
-     * @apiSuccess {String} stock_status  status of product stock.
+     * @apiSuccess {Array} statuses  Array of statuses of the product.
+     * @apiSuccess {Array} stock_statuses  Array of stock statuses of the product.
      * @apiSuccess {String} status  status of product. (is published)
+     * @apiSuccess {String} stock_status_name Name of stock status of the product.
+     * @apiSuccess {String} status_name Name of status of the product.
+     * @apiSuccess {Array} categories Array of categories of the product.
      *
      *
      * @apiSuccessExample Success-Response:
      *     HTTP/1.1 200 OK
      * {
-     *   "Response":
-     *   {
-     *       "product_id" : "1",
-     *       "model" : "Black",
-     *       "name" : "HTC Touch HD",
-     *       "price" : "100.00",
-     *       "currency_code": "UAH"
-     *       "quantity" : "83",
-     *       "main_image" : "http://site-url/image/catalog/demo/htc_iPhone_1.jpg",
-     *       "description" : "Revolutionary multi-touch interface.↵	iPod touch features the same multi-touch screen technology as iPhone.",
-     *       "images" :
+     * "version":"2.0",
+     * "response":
+     *  {
+     *      "product_id":"28",
+     *      "name":"\u0422\u043e\u0432\u0430\u04403",
+     *      "price":"315.00",
+     *      "currency_code":"UAH",
+     *      "quantity":"978",
+     *      "sku":"ar123",
+     *      "statuses":
      *       [
-     *           "http://site-url/image/catalog/demo/htc_iPhone_1.jpg",
-     *           "http://site-url/image/catalog/demo/htc_iPhone_2.jpg",
-     *           "http://site-url/image/catalog/demo/htc_iPhone_3.jpg"
+     *              {
+     *                  "status_id":"pending",
+     *                  "name":"Pending Review"
+     *              },
+     *              {
+     *                  "status_id":"private",
+     *                  "name":"Private"
+     *              },
+     *              {
+     *                  "status_id":"publish",
+     *                  "name":"Published"
+     *              }
      *       ],
-     *       "sku" : "ar123",
-     *        "stock_status" : "instock",
-     *        "status" : "published"
-     *   },
-     *   "Status" : true,
-     *   "version": 1.0
+     *        "stock_statuses":
+     *         [
+     *              {
+     *                  "stock_status_id":"instock",
+     *                  "name":"In Stock"
+     *              },
+     *              {
+     *                  "stock_status_id":"outofstock",
+     *                  "name":"Out of Stock"
+     *              }
+     *         ],
+     *          "stock_status_name":"In Stock",
+     *          "status_name":"Published",
+     *          "categories":[
+     *           {
+     *              "category_id": "16",
+     *              "name": "Тестовая категория"
+     *           },
+     *           {
+     *              "category_id": "21",
+     *              "name": "Категория3 - Категория4"
+     *           },
+     *           {
+     *              "category_id": "24",
+     *              "name": "Категория3 - Категория7"
+     *           }
+     *           ],
+     *          "description":"\u0411\u043b\u0430 \u0431\u043b\u0430 \u0431\u043b\u0430",
+     *          "images":
+     *          [
+     *              {
+     *                  "image":"http:\/\/wordpress.local\/wp-content\/uploads\/2017\/04\/Chrysanthemum-300x300.jpg",
+     *                  "image_id":"11"
+     *              },
+     *              {
+     *                  "image":"http:\/\/wordpress.local\/wp-content\/uploads\/2017\/04\/Jellyfish-300x300.jpg",
+     *                  "image_id":13
+     *              },
+     *              {
+     *                  "image":"http:\/\/wordpress.local\/wp-content\/uploads\/2017\/04\/Koala-1-300x300.jpg",
+     *                  "image_id":29
+     *              },
+     *              {
+     *                  "image":"http:\/\/wordpress.local\/wp-content\/uploads\/2017\/04\/Lighthouse-1-300x300.jpg",
+     *                  "image_id":27
+     *              }
+     *          ]
+     *      },
+     *      "status":true
      * }
+     *
+     *
      * @apiErrorExample Error-Response:
      * {
      *      "Error" : "Can not found product with id = 10",
-     *      "version": 1.0,
+     *      "version": 2.0,
      *      "Status" : false
      * }
-     *
      *
      */
 
@@ -1022,8 +1133,8 @@ class PintaClass extends FunctionsClass
             echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Can not found product with id = ' . $_REQUEST['product_id'], 'status' => false]);
             die;
         }
-        $product_img = $this->getProductImages($id);
-        $product['images'] = $product_img;
+//        $product_img = $this->getProductImages($id);
+//        $product['images'] = $product_img;
 
         echo json_encode(['version' => self::PLUGIN_VERSION, 'response' => $product, 'status' => true]);
         die;
@@ -1033,6 +1144,7 @@ class PintaClass extends FunctionsClass
      * @api {get} index.php?route=changestatus  ChangeStatus
      * @apiName ChangeStatus
      * @apiGroup All
+     * @apiVersion 1.0.0
      *
      * @apiParam {String} comment New comment for order status.
      * @apiParam {Number} order_id unique order ID.
@@ -1053,14 +1165,14 @@ class PintaClass extends FunctionsClass
      *                  "date_added" : "2016-12-27 12:01:51"
      *              },
      *          "status": true,
-     *          "version": 1.0
+     *          "version": 2.0
      *   }
      *
      * @apiErrorExample Error-Response:
      *
      *     {
      *       "error" : "Missing some params",
-     *       "version": 1.0,
+     *       "version": 2.0,
      *       "Status" : false
      *     }
      *
@@ -1094,7 +1206,7 @@ class PintaClass extends FunctionsClass
             die;
         }
 
-        $post_object = get_post( $orderID);
+        $post_object = get_post($orderID);
         $data = [
             "name" => get_order_statuses()[$post_object->post_status],
             "date_added" => $post_object->post_modified,
@@ -1108,6 +1220,7 @@ class PintaClass extends FunctionsClass
      * @api {get} index.php?route=delivery  ChangeOrderDelivery
      * @apiName ChangeOrderDelivery
      * @apiGroup All
+     * @apiVersion 1.0.0
      *
      * @apiParam {String} address New shipping address.
      * @apiParam {String} city New shipping city.
@@ -1121,13 +1234,13 @@ class PintaClass extends FunctionsClass
      *     HTTP/1.1 200 OK
      *   {
      *         "status": true,
-     *         "version": 1.0
+     *         "version": 2.0
      *    }
      * @apiErrorExample Error-Response:
      *
      *     {
      *       "error": "Can not change address",
-     *       "version": 1.0,
+     *       "version": 2.0,
      *       "Status" : false
      *     }
      *
@@ -1166,6 +1279,7 @@ class PintaClass extends FunctionsClass
      * @api {get} index.php?route=clientinfo  getClientInfo
      * @apiName getClientInfo
      * @apiGroup All
+     * @apiVersion 1.0.0
      *
      * @apiParam {Token} token your unique token.
      * @apiParam {Number} client_id unique client ID.
@@ -1197,12 +1311,12 @@ class PintaClass extends FunctionsClass
      *         "telephone" : "13456789"
      *   },
      *   "Status" : true,
-     *   "version": 1.0
+     *   "version": 2.0
      * }
      * @apiErrorExample Error-Response:
      * {
      *      "Error" : "Not one client found",
-     *      "version": 1.0,
+     *      "version": 2.0,
      *      "Status" : false
      * }
      *
@@ -1248,14 +1362,14 @@ class PintaClass extends FunctionsClass
         endif;
         $customer_order_totals = $this->_get_customer_orders_total($cl_obj->ID);
         $response = [
-            "client_id" => (string) $client_id,
+            "client_id" => (string)$client_id,
             "fio" => filterNull($cl_obj->display_name,
                 filterNull($cl_obj->first_name, '') . ' '
                 . filterNull($cl_obj->last_name, '')),
-            "total" => (string) number_format((float)filterNull($customer_order_totals['sum_ords']), 2, '.', ''),
-            "quantity" => (string) filterNull($customer_order_totals['c_orders_count']),
-            "cancelled" => (string) $count_canceled,
-            "completed" => (string) $count_completed,
+            "total" => (string)number_format((float)filterNull($customer_order_totals['sum_ords']), 2, '.', ''),
+            "quantity" => (string)filterNull($customer_order_totals['c_orders_count']),
+            "cancelled" => (string)$count_canceled,
+            "completed" => (string)$count_completed,
             "currency_code" => filterNull($currency_code, ''),
             "email" => filterNull($cl_obj->user_email, ''),
             "telephone" => filterNull($cl_obj->billing_phone, ''),
@@ -1272,6 +1386,7 @@ class PintaClass extends FunctionsClass
      * @api {get} index.php?route=clients  getClients
      * @apiName GetClients
      * @apiGroup All
+     * @apiVersion 1.0.0
      *
      * @apiParam {Token} token your unique token.
      * @apiParam {Number} page number of the page.
@@ -1310,15 +1425,14 @@ class PintaClass extends FunctionsClass
      *      }
      *    },
      *    "Status" : true,
-     *    "version": 1.0
+     *    "version": 2.0
      * }
      * @apiErrorExample Error-Response:
      * {
      *      "Error" : "Not one client found",
-     *      "version": 1.0,
+     *      "version": 2.0,
      *      "Status" : false
      * }
-     *
      *
      */
     public function clients()
@@ -1350,6 +1464,7 @@ class PintaClass extends FunctionsClass
      * @api {get} index.php?route=clientorders  getClientOrders
      * @apiName getClientOrders
      * @apiGroup All
+     * @apiVersion 1.0.0
      *
      * @apiParam {Token} token your unique token.
      * @apiParam {Number} client_id unique client ID.
@@ -1387,12 +1502,12 @@ class PintaClass extends FunctionsClass
      *          }
      *    },
      *    "Status" : true,
-     *    "version": 1.0
+     *    "version": 2.0
      * }
      * @apiErrorExample Error-Response:
      * {
      *      "Error" : "You have not specified ID",
-     *      "version": 1.0,
+     *      "version": 2.0,
      *      "Status" : false
      * }
      *
@@ -1418,18 +1533,18 @@ class PintaClass extends FunctionsClass
         $customer_orders = $this->_get_customer_orders($client_id);
 
         $response = [];
-        if (!$customer_orders || isset($customer_orders['error'])){
+        if (!$customer_orders || isset($customer_orders['error'])) {
             echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => isset($customer_orders['error']) ? $customer_orders['error'] : 'Customer hasn\'t any orders', 'status' => false]);
             die;
         }
 
         if ($customer_orders):
             foreach ($customer_orders as $cord) {
-                $data['order_id'] = (string) $cord["id_order"];
-                $data['order_number'] = (string) $cord["id_order"];
+                $data['order_id'] = (string)$cord["id_order"];
+                $data['order_number'] = (string)$cord["id_order"];
                 $data['status'] = $cord["ord_status"];
                 $data['currency_code'] = $cord["currency_code"];
-                $data['total'] = (string) $cord["total_paid"];
+                $data['total'] = (string)$cord["total_paid"];
                 $data['date_added'] = $cord["date_add"];
                 $response[] = $data;
             }
@@ -1447,6 +1562,7 @@ class PintaClass extends FunctionsClass
      * @api {get} index.php?route=orderhistory  getOrderHistory
      * @apiName getOrderHistory
      * @apiGroup All
+     * @apiVersion 1.0.0
      *
      * @apiParam {Number} order_id unique order ID.
      * @apiParam {Token} token your unique token.
@@ -1504,13 +1620,13 @@ class PintaClass extends FunctionsClass
      *                         }
      *               },
      *           "status": true,
-     *           "version": 1.0
+     *           "version": 2.0
      *       }
      * @apiErrorExample Error-Response:
      *
      *     {
      *          "error": "Can not found any statuses for order with id = 5",
-     *          "version": 1.0,
+     *          "version": 2.0,
      *          "Status" : false
      *     }
      */
@@ -1553,6 +1669,7 @@ class PintaClass extends FunctionsClass
      * @api {get} index.php?route=сhangequantity  сhangeQuantity
      * @apiName сhangeQuantity
      * @apiGroup All
+     * @apiVersion 1.0.0
      *
      * @apiParam {Number} new_quantity new quantity of products.
      * @apiParam {Number} product_id unique product ID.
@@ -1564,7 +1681,7 @@ class PintaClass extends FunctionsClass
      * @apiSuccessExample Success-Response:
      *     HTTP/1.1 200 OK
      *   {
-     *       "version": 1.0,
+     *       "version": 2.0,
      *       "status": true,
      *   }
      *
@@ -1572,10 +1689,9 @@ class PintaClass extends FunctionsClass
      *
      *     {
      *       "error": "Missing some params",
-     *       "version": 1.0,
+     *       "version": 2.0,
      *       "Status" : false
      *     }
-     *
      *
      */
 
@@ -1620,35 +1736,79 @@ class PintaClass extends FunctionsClass
      * @api {get} index.php?route=updateproduct  updateProduct
      * @apiName updateProduct
      * @apiGroup All
+     * @apiVersion 2.0.0
      *
      *
-     * @apiParam {Token} token your unique token.
+     * @apiParam {Token}  token your unique token.
      * @apiParam {Number} product_id unique product ID. (post_id wp_posts)
      * @apiParam {Number} quantity quantity of products (_stock wp_postmeta)
-     * @apiParam {Array} photos массив фоток (три массива приходят от мобильщиков, массив новых, массив для удаления и main image) (_product_image_gallery,)
+     * @apiParam {Array}  photos массив фоток (три массива приходят от мобильщиков, массив новых, массив для удаления и main image) (_product_image_gallery,)
      * @apiParam {String} name product name.(post_title in wp_posts)
-     * @apiParam {String} short_description short product description. (post_excerpt in wp_posts)
-     * @apiParam {String} full_description full product description. (post_content in wp_posts)
+     * @apiParam {String} description full product description. (post_content in wp_posts)
+     *                    short product description (post_excerpt in wp_posts) making from full description
      * @apiParam {String} model model of Product.
      * @apiParam {String} sku sku of Product (_sku wp_postmeta). (артикул)
-     * @apiParam {String} stock_status stock status of Product (_stock_status = instock wp_postmeta). Subtract Stock  (в наличии)
+     * @apiParam {String} substatus stock status of Product (_stock_status = instock wp_postmeta). Subtract Stock  (в наличии)
      * @apiParam {String} status  Product status (is publish?)
+     * @apiParam {String} price  Product price
      *
      * @apiSuccess {Number} version  Current API version.
      * @apiSuccess {Boolean} status  true.
      *
      * @apiSuccessExample Success-Response:
      *     HTTP/1.1 200 OK
-     *   {
-     *       "version": 1.0,
-     *       "status": true,
-     *   }
+     * {
+     * "version": "2.0",
+     * "response": {
+     * "product_id": "157",
+     * "name": "MyProduct!!!",
+     * "price": "11.00",
+     * "currency_code": "UAH",
+     * "quantity": "5",
+     * "sku": "art12345",
+     * "statuses": [
+     * {
+     * "status_id": "pending",
+     * "name": "Pending Review"
+     * },
+     * {
+     * "status_id": "private",
+     * "name": "Private"
+     * },
+     * {
+     * "status_id": "publish",
+     * "name": "Published"
+     * }
+     * ],
+     * "stock_statuses": [
+     * {
+     * "status_id": "instock",
+     * "name": "In Stock"
+     * },
+     * {
+     * "status_id": "outofstock",
+     * "name": "Out of Stock"
+     * }
+     * ],
+     * "stock_status_name": "In Stock",
+     * "status_name": "Published",
+     * "categories": [],
+     * "description": "Big Description",
+     * "images": [
+     * {
+     * "image": "http://woocommerce.pixy.pro/wp-content/uploads/2017/07/Foreks-sovetnik-kalmar-skachat-besplatno-i-bez-registratsii-4-1.jpg",
+     * "image_id": -1
+     * }
+     * ]
+     * },
+     * "status": true
+     * }
      *
      * @apiErrorExample Error-Response:
      *
      *     {
      *       "error": "Missing some params",
-     *       "version": 1.0,
+     *       "version": 2.0,
      *       "Status" : false
      *     }
      *
@@ -1663,79 +1823,70 @@ class PintaClass extends FunctionsClass
             die;
         }
 
-        if (!$_REQUEST['product_id']) {
+        if (!$_REQUEST['name']) {
             echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Missing some params', 'status' => false]);
             die;
         }
 
         $pr_id = $_REQUEST['product_id'];
+//        $result = false;
+        if ((int)$pr_id == 0) {
+            $result = $this->addNewProduct();
+        } else {
 
-        if (!((int)$pr_id)) {
-            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'No valid data. Correct your data and try again.', 'status' => false]);
-            die;
+            if (!((int)$pr_id)) {
+                echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'No valid data. Correct your data and try again.', 'status' => false]);
+                die;
+            }
+
+            $result = $this->updateProductInfo($pr_id);
         }
-
-        $result = $this->updateProductInfo();
 
         if (!$result) {
             echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Can\'t find product or data didn\'t change or any another error. Try again later.', 'status' => false]);
             die;
         }
-
         echo json_encode([
+            'response' => $result,
             'version' => self::PLUGIN_VERSION,
-            'status' => true]);
+            'status' => true,
+        ]);
         die;
     }
 
 
-
     /**
-     * @api {get} index.php?route=addproduct  addProduct
-     * @apiName addProduct
+     * @api {post} index.php?route=mainimage  mainImage
+     * @apiName mainImage
      * @apiGroup All
+     * @apiVersion 2.0.0
      *
      * @apiParam {Token} token your unique token.
-     *
-     * @apiParam {String} title The title of Product
-     * @apiParam {Number} regular_price  Price of the product.
-     * @apiParam {Number} sale_price  Sale price of the product.
-     * @apiParam {String} currency_code  Default currency of the shop.
-     * @apiParam {Number} quantity  Actual quantity of the product.
-     * @apiParam {String} short_description  Short description of the product.
-     * @apiParam {String} full_description  Detail description of the product.
-     * @apiParam {Array} images  Array of the images of the product.
-     * @apiParam {String} sku  sku of product.(артикул)
-     * @apiParam {String} stock_status  status of product stock.
-     * @apiParam {String} status  status of product. (is published)
-     * @apiParam {String} main_img  main image of product.
+     * @apiParam {Number} product_id unique product ID.
+     * @apiParam {Number} image_id unique image ID.
      *
      *
      * @apiSuccess {Number} version  Current API version.
-     * @apiSuccess {Boolean} status  true.
+     * @apiSuccess {Boolean} status Status of the product update.
+     *
      *
      * @apiSuccessExample Success-Response:
      *     HTTP/1.1 200 OK
-     *   {
-     *       "version": 1.0,
-     *       "status": true,
-     *       "response":
-     *   {
-     *         "product_id" : "88",
-     *   }
-     *
+     * {
+     *   "Status" : true,
+     *   "version": 2.0
+     * }
      * @apiErrorExample Error-Response:
-     *
-     *     {
-     *       "error": "Missing some params",
-     *       "version": 1.0,
-     *       "Status" : false
-     *     }
+     * {
+     *      "Error" : "Can not found category with id = 10",
+     *      "version": 2.0,
+     *      "Status" : false
+     * }
      *
      *
      */
 
-    public function addProduct()
+    public function setMainImage()
     {
         $error = $this->valid();
         if ($error) {
@@ -1743,24 +1894,240 @@ class PintaClass extends FunctionsClass
             die;
         }
 
-        if (!$_REQUEST['title']) {
+        if (!$_REQUEST['product_id'] || !$_REQUEST['image_id']) {
             echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Missing some params', 'status' => false]);
             die;
         }
 
-        $result = $this->addNewProduct();
+        $img_id = $_REQUEST['image_id'];
+        $pr_id = $_REQUEST['product_id'];
 
-        if (!$result) {
-            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Can\'t find product or data didn\'t change or any another error. Try again later.', 'status' => false]);
+        if (!((int)$pr_id) || !((int)$img_id)) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'No valid data. Correct your data and try again.', 'status' => false]);
             die;
         }
 
+        $result = $this->setMImage($pr_id, $img_id);
+
+        if (!$result) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Error. Try again later.', 'status' => false]);
+            die;
+        }
         echo json_encode([
-            'response' => ['product_id' => $result],
             'version' => self::PLUGIN_VERSION,
-            'status' => true]);
+            'status' => true,
+        ]);
         die;
     }
 
 
+    /**
+     * @api {post} index.php?route=getsubstatus  getSubstatus
+     * @apiName getSubstatus
+     * @apiGroup All
+     * @apiVersion 2.0.0
+     *
+     * @apiParam {Token} token your unique token.
+     *
+     *
+     * @apiSuccess {Number} version  Current API version.
+     * @apiSuccess {Boolean} status Status of the answer.
+     * @apiSuccess {Object} response Pesponse with stock statuses
+     *
+     *
+     * @apiSuccessExample Success-Response:
+     *     HTTP/1.1 200 OK
+     * {
+     *   "response":
+     *       {
+     *         "stock_statuses":
+     *             [
+     *                  {
+     *                    "stock_status_id":"instock",
+     *                    "name":"In Stock"
+     *                  },
+     *                 {
+     *                    "stock_status_id":"outofstock",
+     *                    "name":"Out of Stock"
+     *                 }
+     *             ]
+     *        },
+     *   "version":"2.0",
+     *    "status":true
+     * }
+     * @apiErrorExample Error-Response:
+     * {
+     *      "Error" : "Can not found category with id = 10",
+     *      "version": 2.0,
+     *      "Status" : false
+     * }
+     */
+    public function getSubstatus()
+    {
+        $error = $this->valid();
+        if ($error) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => $error, 'status' => false]);
+            die;
+        }
+
+
+        $result = $this->getWooSubstatuses();
+        $result_stat = $this->getProductStatuses();
+
+        if (!$result) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Error. Try again later.', 'status' => false]);
+            die;
+        }
+        echo json_encode([
+            'response' => [
+                'stock_statuses' => $result,
+                'statuses' => $result_stat,
+            ],
+            'version' => self::PLUGIN_VERSION,
+            'status' => true,
+        ]);
+        die;
+    }
+
+
+    /**
+     * @api {post} index.php?route=getcategories  getCategories
+     * @apiName getCategories
+     * @apiGroup All
+     * @apiVersion 2.0.0
+     *
+     * @apiParam {Token} token your unique token.
+     * @apiParam {Number} category_id unique category ID.
+     *
+     *
+     * @apiSuccess {Number} version  Current API version.
+     * @apiSuccess {Array} categories  array of categories.
+     * @apiSuccess {Boolean} status Status of the product update.
+     *
+     *
+     * @apiSuccessExample Success-Response:
+     *     HTTP/1.1 200 OK
+     * {"response":
+     *      {
+     *          "categories":
+     *          [
+     *              {
+     *                  "category_id":"17",
+     *                  "name":"\u0422\u0435\u0441\u0442\u043e\u0432\u0430\u044f \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u044f2",
+     *                  "parent":false
+     *              }
+     *          ]
+     *      },
+     *      "version":"2.0",
+     *      "status":true
+     * }
+     * @apiErrorExample Error-Response:
+     * {
+     *      "Error" : "Can not found category with id = 10",
+     *      "version": 2.0,
+     *      "Status" : false
+     * }
+     *
+     *
+     */
+    public function getCategories()
+    {
+        $error = $this->valid();
+        if ($error) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => $error, 'status' => false]);
+            die;
+        }
+
+        if (!$_REQUEST['category_id']) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Missing some params', 'status' => false]);
+            die;
+        }
+
+        $cat_id = $_REQUEST['category_id'];
+
+        if (!((int)$cat_id)) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'No valid data. Correct your data and try again.', 'status' => false]);
+            die;
+        }
+
+        $result = $this->getCategoriesByParentId($cat_id);
+
+        if (!$result) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Error! Haven\'t categories with such parent!', 'status' => false]);
+            die;
+        }
+        echo json_encode([
+            'response' => [
+                'categories' => $result
+            ],
+            'version' => self::PLUGIN_VERSION,
+            'status' => true,
+        ]);
+        die;
+    }
+
+
+    /**
+     * @api {post} index.php?route=deleteimage  deleteImage
+     * @apiName deleteImage
+     * @apiGroup All
+     * @apiVersion 2.0.0
+     *
+     * @apiParam {Token} token your unique token.
+     * @apiParam {Number} product_id unique product ID.
+     * @apiParam {Number} image_id unique image ID.
+     *
+     *
+     * @apiSuccess {Number} version  Current API version.
+     * @apiSuccess {Boolean} status Status of the product update.
+     *
+     *
+     * @apiSuccessExample Success-Response:
+     *     HTTP/1.1 200 OK
+     * {
+     *   "Status" : true,
+     *   "version": 2.0
+     * }
+     * @apiErrorExample Error-Response:
+     * {
+     *      "Error" : "Can not found category with id = 10",
+     *      "version": 2.0,
+     *      "Status" : false
+     * }
+     *
+     *
+     */
+
+    public function deleteImage()
+    {
+
+        $error = $this->valid();
+        if ($error) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => $error, 'status' => false]);
+            die;
+        }
+
+        if (!$_REQUEST['product_id'] || !$_REQUEST['image_id']) {
+            echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Missing some params', 'status' => false]);
+            die;
+        }
+
+        $result = ($_REQUEST['image_id'] == -1)
+            ? $this->removeProductMainImage($_REQUEST['product_id'])
+            : $this->removeProductImageById($_REQUEST['product_id'], $_REQUEST['image_id']);
+
+        if (!$result || ($result && isset($result['error']) && $result['error'])) {
+            echo json_encode([
+                'version' => self::PLUGIN_VERSION,
+                'error' => $result['message'] ? $result['message'] : 'Error. Try again later.',
+                'status' => false
+            ]);
+            die;
+        }
+        echo json_encode([
+            'version' => self::PLUGIN_VERSION,
+            'status' => true,
+        ]);
+        die;
+    }
 }

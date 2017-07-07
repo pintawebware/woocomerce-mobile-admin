@@ -4,7 +4,7 @@ Donate link: https://github.com/pintawebware/woocomerce-mobile-admin/raw/master/
 Tags: woocommerce, android, ios, mobile, shop, sales, assistant, business, control, statistics, reports, tracker
 Requires at least: 4.7.3
 Tested up to: 4.7.3
-Stable tag: 1.0.0
+Stable tag: 1.0
 
 This plugin allows you to keep your online business under control wherever you are.
 
@@ -65,10 +65,23 @@ Free support is provided via e-mail - info@wordpressapp.pro
 
 == Changelog ==
 
-= 1.0.0 =
-* First release
+= 2.0 =
+* Creating new product:
+        - Picture;
+        - Name;
+        - Description;
+        - Model;
+        - Price;
+        - Amount;
+        - Status;
+        - Stock status;
 
-== Upgrade notice ==
+* Edit product:
+        - Edit main image;
+        - Delete/add pictures;
 
-= 1.0.0 =
+* Edit of all standard product fields
+   *** for free version, only product amount edit is available
+
+= 1.0 =
 * First release

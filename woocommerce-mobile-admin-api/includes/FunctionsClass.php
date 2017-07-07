@@ -1,7 +1,6 @@
 <?php
 
 include_once(WOOCOMMERCE_PINTA_DIR . 'includes/functions.php');
-//include_once (WOOCOMMERCE_PINTA_DIR. 'includes/abstracts/abstract-wc-product.php');
 
 /**
  * Class PintaFunctionsClass
@@ -13,7 +12,6 @@ class FunctionsClass
     public function __construct()
     {
         $this->check_is_woo_activated();
-//        add_action('woocommerce_checkout_update_order_meta', 'mobassist_push_new_order');
 
         $plugin = plugin_basename(__FILE__);
         add_filter("plugin_action_links_$plugin", array(&$this, 'setting_link'));
@@ -43,16 +41,14 @@ class FunctionsClass
             'prices_include_tax' => metadata_exists('post', $id, '_prices_include_tax') ? 'yes' === get_post_meta($id, '_prices_include_tax', true) : 'yes' === get_option('woocommerce_prices_include_tax'),
         ));
 
-        // Gets extra data associated with the order if needed.
-//        var_dump($order->get_extra_data_keys());
-//        exit;
+        #  Gets extra data associated with the order if needed.
         if ($order->get_extra_data_keys()):
-        foreach ($order->get_extra_data_keys() as $key) {
-            $function = 'set_' . $key;
-            if (is_callable(array($order, $function))) {
-                $order->{$function}(get_post_meta($order->get_id(), '_' . $key, true));
+            foreach ($order->get_extra_data_keys() as $key) {
+                $function = 'set_' . $key;
+                if (is_callable(array($order, $function))) {
+                    $order->{$function}(get_post_meta($order->get_id(), '_' . $key, true));
+                }
             }
-        }
         endif;
     }
 
@@ -66,19 +62,19 @@ class FunctionsClass
 
         $response = [];
         if ($res):
-        foreach ($res as $comment) {
-            $result['date_added'] = $comment['comment_date'];
-            $result['comment'] = $comment['comment_content'];
-            $status = strstr($comment['comment_content'], 'Статус заказа изменен');
-            $status = strstr($status, ' на ');
+            foreach ($res as $comment) {
+                $result['date_added'] = $comment['comment_date'];
+                $result['comment'] = $comment['comment_content'];
+                $status = strstr($comment['comment_content'], 'Статус заказа изменен');
+                $status = strstr($status, ' на ');
 
-            $status = trim(str_replace([' на ', '.'], "", $status));
+                $status = trim(str_replace([' на ', '.'], "", $status));
 
-            $result['name'] = $status;
-            $result['order_status_id'] = $this->getStatusKey($status);
+                $result['name'] = $status;
+                $result['order_status_id'] = $this->getStatusKey($status);
 
-            $response[] = $result;
-        }
+                $response[] = $result;
+            }
         endif;
 
         return $response;
@@ -213,7 +209,7 @@ class FunctionsClass
         $fio = filterNull($_REQUEST['fio'], '');
         $min_price = filterNull($_REQUEST['min_price'], '0');
         $max_price = filterNull($_REQUEST['max_price'], '');
-        $order_status_id = filterNull($_REQUEST['order_status_id'],'');
+        $order_status_id = filterNull($_REQUEST['order_status_id'], '');
         $date_min = filterNull($_REQUEST['date_min'], '');
         $date_max = filterNull($_REQUEST['date_max'], '');
         $sort_by = filterNull($_REQUEST['sort_by'], '');
@@ -222,7 +218,7 @@ class FunctionsClass
             $fio = filterNull($filter['fio'], '');
             $min_price = filterNull($filter['min_price'], '0');
             $max_price = filterNull($filter['max_price'], '');
-            $order_status_id = filterNull($filter['order_status_id'],'');
+            $order_status_id = filterNull($filter['order_status_id'], '');
             $date_min = filterNull($filter['date_min'], '');
             $date_max = filterNull($filter['date_max'], '');
             $sort_by = filterNull($filter['sort_by'], '');
@@ -295,7 +291,7 @@ class FunctionsClass
             $query_where_parts[] = sprintf(" (posts.post_date_gmt) >=  '%s' ",
                 $date_min);
         }
-//        var_dump($date_max); exit;
+
         if ($date_max) {
             $query_where_parts[] = sprintf(" (posts.post_date_gmt) <=  '%s' ",
                 $date_max);
@@ -323,13 +319,13 @@ class FunctionsClass
         if ($max_price) {
             $query_where_parts[] = sprintf(
                 " meta_order_total.meta_value <= %s ",
-                (float) $max_price
+                (float)$max_price
             );
         }
         if ($order_status_id) {
-                $query_where_parts[] = sprintf(" posts.post_status IN ('%s') ",
-                     $order_status_id
-                );
+            $query_where_parts[] = sprintf(" posts.post_status IN ('%s') ",
+                $order_status_id
+            );
         }
 
         if ($order_id) {
@@ -361,7 +357,7 @@ class FunctionsClass
         $order = [];
         $max_price_total = 0;
         $results = $wpdb->get_results($query, ARRAY_A);
-//        var_dump($query); exit;
+#         var_dump($query); exit;
         $orders_status = $this->get_orders_statuses();
         if ($results && is_array($results)):
             foreach ($results as $key => $result_order) {
@@ -380,7 +376,7 @@ class FunctionsClass
                 } else {
                     $order[$key]['order_id'] = (string)$result_order['id_order'];
 
-                    if ((float)$result_order['total_paid'] > (float) $max_price_total) $max_price_total = (float)$result_order['total_paid'];
+                    if ((float)$result_order['total_paid'] > (float)$max_price_total) $max_price_total = (float)$result_order['total_paid'];
                 }
             }
         endif;
@@ -389,7 +385,7 @@ class FunctionsClass
             'orders' => $order,
             'statuses' => $orders_status,
             'currency_code' => get_woocommerce_currency(),
-            'total_quantity' => (int) $totals['total_orders'],
+            'total_quantity' => (int)$totals['total_orders'],
             'total_sum' => (string)number_format(filterNull($totals['total_sales'], 0), 2, '.', ''),
             'max_price' => (string)number_format((float)$max_price_total, 2, '.', ''),
         );
@@ -501,29 +497,29 @@ class FunctionsClass
             $query .= " WHERE " . implode(" AND ", $query_where_parts);
         }
 
-if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
-        $query .= " ORDER BY ";
+        if (in_array($sort_by, ['sum', 'date_added', 'quantity'])):
+            $query .= " ORDER BY ";
 
-        //sum/quantity/date_added
+            # sum/quantity/date_added
 
-        switch ($sort_by) {
-            case 'id':
-                $dir = $this->getSortDirection('ASC');
-                $query .= " customer_user.meta_value " . $dir;
-                break;
-            case 'sum':
-                $dir = $this->getSortDirection('DESC');
-                $query .= " CAST(totalsum.order_total AS unsigned) " . $dir;
-                break;
-            case 'date_added':
-                $dir = $this->getSortDirection('DESC');
-                $query .= " user_registered.user_registered " . $dir;
-                break;
-            case 'quantity':
-                $dir = $this->getSortDirection('DESC');
-                $query .= " CAST(tot.total_orders AS unsigned) " . $dir;
-                break;
-        }
+            switch ($sort_by) {
+                case 'id':
+                    $dir = $this->getSortDirection('ASC');
+                    $query .= " customer_user.meta_value " . $dir;
+                    break;
+                case 'sum':
+                    $dir = $this->getSortDirection('DESC');
+                    $query .= " CAST(totalsum.order_total AS unsigned) " . $dir;
+                    break;
+                case 'date_added':
+                    $dir = $this->getSortDirection('DESC');
+                    $query .= " user_registered.user_registered " . $dir;
+                    break;
+                case 'quantity':
+                    $dir = $this->getSortDirection('DESC');
+                    $query .= " CAST(tot.total_orders AS unsigned) " . $dir;
+                    break;
+            }
         endif;
 
         $query .= sprintf(" LIMIT %d, %d", (($page - 1) * $limit), $limit);
@@ -534,14 +530,14 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
             foreach ($results as $user) {
                 $customer['client_id'] = (string)$user['customer_user'];
                 $customer['quantity'] = (string)filterNull($user['total_orders'], '0');
-                $customer['total'] = (string) number_format((string)filterNull($user['order_total']),2, '.', '');
+                $customer['total'] = (string)number_format((string)filterNull($user['order_total']), 2, '.', '');
                 $customer['fio'] = filterNull($user['shipping_first_name'], filterNull($user['billing_first_name'], ''))
                     . ' ' . filterNull($user['shipping_last_name'], filterNull($user['billing_last_name'], ''));
                 $customer['currency_code'] = $user['order_currency'];
                 $customers[] = $customer;
             }
         endif;
-//        $row_page = $wpdb->get_row($query_page, ARRAY_A);
+
         return $customers;
     }
 
@@ -577,7 +573,7 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
         $result = [];
         if ($products):
             /**
-             * "description" : "Revolutionary multi-touch interface.↵	iPod touch features the same multi-touch screen technology as iPhone.",
+             * "description" : "Revolutionary multi-touch interface.↵   iPod touch features the same multi-touch screen technology as iPhone.",
              */
             $result['product_id'] = (string)$products["pr_id"];
 
@@ -585,31 +581,136 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
             $allproductinfo = new WC_Product($products["pr_id"]);
 
             $result['name'] = $allproductinfo->get_name();
-            $result['model'] = filterNull($allproductinfo->get_attribute('Модель'),
-                filterNull($allproductinfo->get_attribute('model'),
-                    ''));
-            $result['price'] = (string)number_format(floatval($allproductinfo->get_price()), 2, '.', '');
+
+            $sql = "SELECT meta_value as price FROM  {$wpdb->postmeta} WHERE post_id = %s and meta_key = \"%s\"";
+            $sql = sprintf($sql, $products["pr_id"], "_sale_price");
+            $price = $wpdb->get_row($sql, ARRAY_A)['price'];
+            $result['price'] = (string)number_format(floatval($price), 2, '.', '');# (string)number_format(floatval($allproductinfo->get_price()), 2, '.', '');
             $result['currency_code'] = get_woocommerce_currency();
             $result['quantity'] = (string)($allproductinfo->get_stock_quantity() ?
                 $allproductinfo->get_stock_quantity() : '0');
 
-
             $result['sku'] = $allproductinfo->get_sku();
-            $result['stock_status'] = $allproductinfo->get_stock_status();
-            $result['status'] = $allproductinfo->get_status();
+            $result['statuses'] = $this->getProductStatuses();
+
+            $result['stock_statuses'] = $this->getWooSubstatuses();
+            $result['stock_status_name'] = $this->stockStatusNameById($allproductinfo->get_stock_status());
+            $result['status_name'] = array_key_exists($allproductinfo->get_status(), get_post_statuses())
+                ? get_post_statuses()[$allproductinfo->get_status()] : 'Draft';
+            $result['categories'] = $this->get_categories($products["pr_id"]);
 
             $descript = $allproductinfo->get_description();
-
             $szSearchPattern = '~<img [^>]* />~';
-            preg_match_all( $szSearchPattern, $descript, $aPics );
+            preg_match_all($szSearchPattern, $descript, $aPics);
             if ($aPics) {
                 $descript = preg_replace("~<img [^>]* />~", "", $descript);
             }
             $result['description'] = $descript;
-
+            $result['images'] = $this->getProductImages($products["pr_id"]);
         endif;
 
         return $result;
+    }
+
+    protected function getProductStatuses()
+    {
+        $result = [];
+        foreach (get_post_statuses() as $key => $value) {
+            if ($key == 'draft') continue;
+            $result[] = [
+                'status_id' => $key,
+                'name' => $value,
+            ];
+        }
+        return $result;
+    }
+
+    public function stockStatusNameById($stock_id)
+    {
+
+        $stock_arr = [
+            'instock' => 'In Stock',
+            'outofstock' => 'Out of Stock',
+        ];
+        return $stock_arr[$stock_id];
+    }
+
+    /**
+     * @param $prod_id
+     */
+    protected function get_categories($prod_id)
+    {
+
+        global $wpdb;
+
+        $sql = "SELECT tr.object_id, tt.term_taxonomy_id, tt.parent, t.name FROM {$wpdb->prefix}term_taxonomy tt 
+                INNER JOIN {$wpdb->prefix}term_relationships tr ON tr.term_taxonomy_id = tt.term_taxonomy_id 
+                INNER JOIN {$wpdb->prefix}terms t 
+                ON t.term_id = tt.term_taxonomy_id WHERE tr.object_id = %s AND tt.taxonomy = %s";
+        $query = $wpdb->prepare($sql, $prod_id, 'product_cat');
+
+        $products = $wpdb->get_results($query, ARRAY_A);
+
+        $result = [];
+
+        foreach ($products as $key => $value) {
+            $result[] = [
+                'category_id' => $value['term_taxonomy_id'],
+                'name' => (!$value['parent']) ? $value['name'] : $this->get_category_full_name($value['term_taxonomy_id'])
+            ];
+        }
+        return $result;
+    }
+
+    /**
+     * @param $prod_id
+     */
+    protected function get_main_category_in_string($prod_id)
+    {
+
+        global $wpdb;
+
+        $sql = "SELECT t.name FROM {$wpdb->prefix}term_taxonomy tt 
+                INNER JOIN {$wpdb->prefix}term_relationships tr ON tr.term_taxonomy_id = tt.term_taxonomy_id 
+                INNER JOIN {$wpdb->prefix}terms t 
+                ON t.term_id = tt.term_taxonomy_id WHERE tr.object_id = %s AND tt.taxonomy = %s";
+        $query = $wpdb->prepare($sql, $prod_id, 'product_cat');
+
+        $products = $wpdb->get_row($query, ARRAY_A);
+
+#         $result = '';
+#         if ($products):
+#             $counter = count($products);
+#         foreach ($products as $key => $value) {
+#             $result .= $value['name'];
+#             if ($key < $counter-1) $result .= ', ';
+#         }
+#         endif;
+        return $products ? $products['name'] : '';# $result;
+    }
+
+    /**
+     * Return full category name with all parents
+     * @param $prod_id
+     */
+    protected function get_category_full_name($categ_id)
+    {
+
+        global $wpdb;
+        $sql = "SELECT 
+                    tt.term_taxonomy_id, tt.parent, t.name FROM {$wpdb->prefix}term_taxonomy tt 
+                INNER JOIN {$wpdb->prefix}terms t 
+                     ON t.term_id = tt.term_taxonomy_id WHERE tt.term_taxonomy_id = %s AND tt.taxonomy = %s";
+        $query = $wpdb->prepare($sql, $categ_id, 'product_cat');
+        $categ = $wpdb->get_row($query, ARRAY_A);
+        $name = '';
+        if (!$categ['parent']) {
+            $name .= $categ['name'];
+        } else {
+            $name .= $this->get_category_full_name($categ['parent']) . ' - ' . $categ['name'];
+        }
+
+        return $name;
     }
 
     /**
@@ -620,19 +721,38 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
         if (!$id) return false;
 
         $productWP = new WC_product($id);
+
         $mainimage = $productWP->get_image_id();
-        $res[] = (is_array(wp_get_attachment_image_src($mainimage, 'shop_catalog'))) ?
-            array_shift(wp_get_attachment_image_src($mainimage, 'shop_catalog')) : [];
-        $attachment_ids = $productWP->get_gallery_image_ids();
 
-        if ($attachment_ids):
-        foreach ($attachment_ids as $attachment_id) {
-            if (is_array(wp_get_attachment_image_src($attachment_id, 'shop_catalog'))):
-            $res[] = array_shift(wp_get_attachment_image_src($attachment_id, 'shop_catalog'));
-            endif;
+        if (!$mainimage) {
+            $res[] = [
+                'image' => '',
+                'image_id' => '-1', # $mainimage
+            ];
+        } else {
+            $res[] = [
+                'image' => (is_array(wp_get_attachment_image_src($mainimage, 'shop_catalog'))) ?
+                    array_shift(wp_get_attachment_image_src($mainimage, 'shop_catalog')) : '',
+                'image_id' => '-1', # $mainimage
+            ];
         }
-        endif;
+        $attachment_ids = $productWP->get_gallery_image_ids();
+        usort($attachment_ids, function ($a, $b) {
+            return ($a - $b);
+        });
+        if ($attachment_ids):
+//            $result = [];
+            foreach ($attachment_ids as $attachment_id) {
+                if ($attachment_id != $mainimage && is_array(wp_get_attachment_image_src($attachment_id, 'shop_catalog'))):
+                    $res[] = [
+                        'image' => array_shift(wp_get_attachment_image_src($attachment_id, 'shop_catalog')),
+                        'image_id' => (string)$attachment_id,
+                    ];
+                endif;
+            }
 
+//            array_pop($result, $res['0']);
+        endif;
         return filterNull($res, []);
     }
 
@@ -666,7 +786,7 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
             $query_products .= " WHERE " . implode(" AND ", $query_where_parts);
         }
 
-        $query_products .= " ORDER BY posts.ID " . $this->getSortDirection('DESC');
+        $query_products .= " ORDER BY posts.ID " . $this->getSortDirection('ASC');
 
 
         $query_products .= sprintf(" LIMIT %d, %d", (($page - 1) * $limit), $limit);
@@ -680,10 +800,6 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
                 $result[$key]['name'] = $orderproduct['pr_name'];
                 # Объект продукта WP
                 $allproductinfo = new WC_Product($orderproduct["pr_id"]);
-
-                $result[$key]['model'] = filterNull($allproductinfo->get_attribute('Модель'),
-                    filterNull($allproductinfo->get_attribute('model'),
-                        ''));
                 $result[$key]['price'] = (string)number_format(floatval($allproductinfo->get_price()), 2, '.', '');
                 $result[$key]['currency_code'] = get_woocommerce_currency();
                 $result[$key]['quantity'] = (string)($allproductinfo->get_stock_quantity() ?
@@ -693,14 +809,13 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
                 $attachment_id = get_post_thumbnail_id($orderproduct["pr_id"]);
                 $id_image = wp_get_attachment_image_src($attachment_id, 'thumbnail');
                 $result[$key]['image'] = filterNull($id_image[0], '');
+
+                $result[$key]['category'] = $this->get_main_category_in_string($orderproduct["pr_id"]);
             }
         endif;
 
         return $result;
     }
-
-
-//    update_status
 
 
     /**
@@ -778,18 +893,13 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
                 $res[$key]['price'] = (string)number_format((float)$allproductinfo->get_price(), 2, '.', '');
                 $res[$key]['discount_price'] = (string)number_format((float)$allproductinfo->get_sale_price(), 2, '.', '');
                 $res[$key]['discount'] = (string)number_format((float)$allproductinfo->get_regular_price() - $allproductinfo->get_sale_price(), 2, '.', '');
-//            $result[$key]['description'] = $allproductinfo->get_description();
+#             $result[$key]['description'] = $allproductinfo->get_description();
                 $total_discount += (($allproductinfo->get_regular_price() - $allproductinfo->get_sale_price()) * $res[$key]['quantity']);
 
                 # url картинки продукта
                 $attachment_id = get_post_thumbnail_id($orderproduct["pr_id"]);
                 $id_image = wp_get_attachment_image_src($attachment_id, 'thumbnail');
                 $res[$key]['image'] = (string)filterNull($id_image[0], '');
-
-                # тут нужно имя модели
-                $res[$key]['model'] = (string)filterNull($allproductinfo->get_attribute('Модель'),
-                    filterNull($allproductinfo->get_attribute('model'),
-                        ''));
             }
         endif;
 
@@ -839,13 +949,13 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
 
     private function getSortDirection($default_direction = 'DESC')
     {
-//        if (isset($this->order_by) && !empty($this->order_by)) {
-//            $direction = $this->order_by;
-//        } else {
-//            $direction = $default_direction;
-//        }
-# Тут доделаю!!!!! чтобі менять сортировку при каждлм клике в разніе стороны
-        return $default_direction; //' ' . $direction;
+#         if (isset($this->order_by) && !empty($this->order_by)) {
+#             $direction = $this->order_by;
+#         } else {
+#             $direction = $default_direction;
+#         }
+
+        return $default_direction; # ' ' . $direction;
     }
 
 
@@ -1140,11 +1250,11 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
             $wpdb->query($updateStrStreet);
         endif;
 
-//        if ($flat):
-            $updateStrFl = sprintf($updateStr1,
-                $flat, '_shipping_address_2', $order_id);
-            $wpdb->query($updateStrFl);
-//        endif;
+#         if ($flat):
+        $updateStrFl = sprintf($updateStr1,
+            $flat, '_shipping_address_2', $order_id);
+        $wpdb->query($updateStrFl);
+#         endif;
 
         return true;
     }
@@ -1226,12 +1336,12 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
         $orders = array();
         $results = $wpdb->get_results($query, ARRAY_A);
         if ($results):
-        foreach ($results as $order) {
-            $order['total_paid'] = $order['total_paid'];
-            $order['ord_status'] = $this->_get_order_status_name($order['id_order'], $order['order_status_id']);
-            $order['ord_status_code'] = $order['order_status_id'];
-            $orders[] = $order;
-        }
+            foreach ($results as $order) {
+                $order['total_paid'] = $order['total_paid'];
+                $order['ord_status'] = $this->_get_order_status_name($order['id_order'], $order['order_status_id']);
+                $order['ord_status_code'] = $order['order_status_id'];
+                $orders[] = $order;
+            }
         endif;
         return $orders;
     }
@@ -1362,7 +1472,7 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
         $plugin = isset($_REQUEST['plugin']) ? $_REQUEST['plugin'] : '';
         check_admin_referer("deactivate-plugin_{$plugin}");
 
-//        remove_action('woocommerce_order_status_changed', 'pinta_push_change_status');
+#         remove_action('woocommerce_order_status_changed', 'pinta_push_change_status');
 
     }
 
@@ -1373,17 +1483,18 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
         }
         check_admin_referer('bulk-plugins');
 
-// Проверка, был ли файл зарегстрирован
+#  Проверка, был ли файл зарегстрирован
         if (__FILE__ != WP_UNINSTALL_PLUGIN) {
             return;
         }
 
 # Раскомментируйте следующую строку, чтобы увидеть функцию в действии
-//exit( var_dump( $_GET ) );
+# exit( var_dump( $_GET ) );
     }
 
 
-    public function sendCurl($fields){
+    public function sendCurl($fields)
+    {
         $API_ACCESS_KEY = 'AAAAlhKCZ7w:APA91bFe6-ynbVuP4ll3XBkdjar_qlW5uSwkT5olDc02HlcsEzCyGCIfqxS9JMPj7QeKPxHXAtgjTY89Pv1vlu7sgtNSWzAFdStA22Ph5uRKIjSLs5z98Y-Z2TCBN3gl2RLPDURtcepk';
         $headers = array
         (
@@ -1392,7 +1503,7 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
         );
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+        curl_setopt($ch, CURLOPT_URL, 'https:# fcm.googleapis.com/fcm/send');
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -1411,7 +1522,8 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
      * @param $quantity
      * @return false|int
      */
-    protected function setNewProductStock($productId, $quantity) {
+    protected function setNewProductStock($productId, $quantity)
+    {
 
         global $wpdb;
 
@@ -1433,68 +1545,193 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
     /**
      *
      */
-    protected  function addNewProduct() {
-//
-//        $new_pr = new WC_Product_Data_Store_CPT();
-//        $product = new WC_Product();
-//        global $wpdb;
+    protected function addNewProduct()
+    {
+
+        global $wpdb;
+        $shortDescr = preg_replace("#[^\.]*\.#s", '', $_REQUEST['description'], 1);
 
         $post = array(
             'post_author' => '2',
             'post_content' => '',
-            'post_status' => filterNull($_REQUEST['status'], "publish"),
-            'post_title' => filterNull($_REQUEST['title'], ''),
+            'post_status' => (array_key_exists($_REQUEST['status'], get_post_statuses())) ? $_REQUEST['status'] : "publish",
+            'post_title' => filterNull($_REQUEST['name'], ''),
             'post_parent' => '',
             'post_type' => "product",
-            'post_content' => filterNull($_REQUEST['full_description'], ""),
-            'post_excerpt' => filterNull($_REQUEST['short_description'], ""),
+            'post_content' => filterNull($_REQUEST['description'], ""),
+            'post_excerpt' => filterNull($shortDescr, ""),
         );
 
-//Create post
-        $post_id = wp_insert_post( $post, true  );
-//        if($post_id){
-////            $attach_id = get_post_meta($product->parent_id, "_thumbnail_id", true);
-////            add_post_meta($post_id, '_thumbnail_id', $attach_id);
-//        }
+        $post_id = wp_insert_post($post, true);
+#         if($post_id){
+# #             $attach_id = get_post_meta($product->parent_id, "_thumbnail_id", true);
+# #             add_post_meta($post_id, '_thumbnail_id', $attach_id);
+#         }
 
-        wp_set_object_terms( $post_id, 'Races', 'product_cat' );
-        wp_set_object_terms($post_id, 'simple', 'product_type');
-
-        update_post_meta( $post_id, '_visibility', 'visible' );
-        update_post_meta( $post_id, '_stock_status', filterNull($_REQUEST['stock_status'], 'instock'));
-        update_post_meta( $post_id, '_downloadable', 'yes');
-        update_post_meta( $post_id, 'total_sales', '0');
-        update_post_meta( $post_id, '_downloadable', 'yes');
-        update_post_meta( $post_id, '_virtual', 'yes');
-        update_post_meta( $post_id, '_regular_price', filterNull($_REQUEST['regular_price'], 0) );
-        update_post_meta( $post_id, '_sale_price', filterNull($_REQUEST['sale_price'], 0) );
-        update_post_meta( $post_id, '_purchase_note', "" );
-        update_post_meta( $post_id, '_featured', "no" );
-        update_post_meta( $post_id, '_weight', "" );
-        update_post_meta( $post_id, '_length', "" );
-        update_post_meta( $post_id, '_width', "" );
-        update_post_meta( $post_id, '_height', "" );
+#         wp_set_object_terms( $post_id_id, 'Races', 'product_cat' );
+#         wp_set_object_terms($post_id_id, 'simple', 'product_type');
+        update_post_meta($post_id, '_visibility', 'visible');
+        update_post_meta($post_id, '_stock_status', filterNull($_REQUEST['substatus'], 'instock'));
+        update_post_meta($post_id, '_downloadable', 'yes');
+        update_post_meta($post_id, 'total_sales', '0');
+#         update_post_meta( $post_id, '_downloadable', 'yes');
+#         update_post_meta( $post_id, '_virtual', 'yes');
+        update_post_meta($post_id, '_regular_price', filterNull($_REQUEST['price'], 0));
+        update_post_meta($post_id, '_sale_price', filterNull($_REQUEST['price'], 0));
+        update_post_meta($post_id, '_purchase_note', "");
+        update_post_meta($post_id, '_featured', "no");
+        update_post_meta($post_id, '_weight', "");
+        update_post_meta($post_id, '_length', "");
+#         update_post_meta( $post_id, '_width', "" );
+#         update_post_meta( $post_id, '_height', "" );
         update_post_meta($post_id, '_sku', filterNull($_REQUEST['sku'], ''));
-        update_post_meta( $post_id, '_product_attributes', array());
-        update_post_meta( $post_id, '_sale_price_dates_from', "" );
-        update_post_meta( $post_id, '_sale_price_dates_to', "" );
-        update_post_meta( $post_id, '_price', filterNull($_REQUEST['sale_price'], 0) ? filterNull($_REQUEST['sale_price'], 0) : filterNull($_REQUEST['regular_price'], 0) );
-        update_post_meta( $post_id, '_sold_individually', "" );
-        update_post_meta( $post_id, '_manage_stock', "no" );
-        update_post_meta( $post_id, '_backorders', "no" );
-        update_post_meta( $post_id, '_stock', filterNull($_REQUEST['quantity'], 0)  );
+        update_post_meta($post_id, '_product_attributes', array());
+        update_post_meta($post_id, '_sale_price_dates_from', "");
+        update_post_meta($post_id, '_sale_price_dates_to', "");
+        update_post_meta($post_id, '_price', filterNull($_REQUEST['price'], 0));
+        update_post_meta($post_id, '_sold_individually', "");
+        update_post_meta($post_id, '_manage_stock', "no");
+        update_post_meta($post_id, '_backorders', "no");
+        update_post_meta($post_id, '_stock', filterNull($_REQUEST['quantity'], 0));
+
+#         update_post_meta( $post_id, '_wp_attachment_metadata', serialize($new_images) );
 
 
+#       grant permission to any newly added files on any existing orders for this product
+#       do_action( 'woocommerce_process_product_file_download_paths', $post_id, 0, $downdloadArray );
+        update_post_meta($post_id, '_download_limit', '');
+        update_post_meta($post_id, '_download_expiry', '');
+        update_post_meta($post_id, '_download_type', '');
+#         update_post_meta( $post_id, '_product_image_gallery', filterNull($_REQUEST['main_img'], 0) );
 
-// grant permission to any newly added files on any existing orders for this product
-// do_action( 'woocommerce_process_product_file_download_paths', $post_id, 0, $downdloadArray );
-        update_post_meta( $post_id, '_download_limit', '');
-        update_post_meta( $post_id, '_download_expiry', '');
-        update_post_meta( $post_id, '_download_type', '');
-        update_post_meta( $post_id, '_product_image_gallery', filterNull($_REQUEST['main_img'], 0) );
+        # add categories_ids
+        # меняем категорию
+        if ($_REQUEST['categories'] && (is_array($_REQUEST['categories']))) {
+            $cat_ids = $_REQUEST['categories'];
+            foreach ($cat_ids as $key => $value) {
+                $sql = "INSERT INTO {$wpdb->term_relationships} (object_id, term_taxonomy_id)
+                        VALUES (%s, %s)";
 
-        return $post_id;
+                $wpdb->query($wpdb->prepare(
+                    $sql, $post_id, (int)$value
+                ));
+            }
+        }
+
+
+        # add images
+        # загружаем в галерею картинки
+        $this->loadImages($post_id, true);
+
+
+        $img_arr = $this->getProductImages($post_id);
+
+
+        return [
+            'product_id' => $post_id,
+            'images' => $img_arr,
+        ];
     }
+
+    /**
+     *
+     */
+    function custom_media_sideload_image($image_url = '', $post_id = false, $uploadedfile = [])
+    {
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        $tmp = download_url($image_url);
+        #  Set variables for storage
+        #  fix file filename for query strings
+        preg_match('/[^\?]+\.(jpe?g|jpe|gif|png)\b/i', $image_url, $matches);
+        $file_array['name'] = basename($matches[0]) ? basename($matches[0]) : $uploadedfile['name'];
+        $file_array['tmp_name'] = $tmp ? $tmp : $uploadedfile['tmp_name'];
+        #  If error storing temporarily, unlink
+        if (is_wp_error($tmp)) {
+            @unlink($file_array['tmp_name']);
+            $file_array['tmp_name'] = '';
+        }
+        $time = current_time('mysql');
+        $file = wp_handle_sideload($file_array, array('test_form' => false), $time);
+        if (isset($file['error'])) {
+            return new WP_Error('upload_error', $file['error']);
+        }
+        $url = $file['url'];
+        $type = $file['type'];
+        $file = $file['file'];
+        $title = preg_replace('/\.[^.]+$/', '', basename($file));
+        $parent = (int)absint($post_id) > 0 ? absint($post_id) : 0;
+        $attachment = array(
+            'post_mime_type' => $type,
+            'guid' => $url,
+            'post_parent' => $parent,
+            'post_title' => $title ? $title : $uploadedfile['name'],
+            'post_name' => $title ? $title : $uploadedfile['name'],
+            'post_content' => '',
+        );
+        $id = wp_insert_attachment($attachment, $file, $parent);
+        if (!is_wp_error($id)) {
+            require_once ABSPATH . 'wp-admin/includes/image.php';
+            $data = wp_generate_attachment_metadata($id, $file);
+            wp_update_attachment_metadata($id, $data);
+        }
+        return $id;
+    }
+
+    /*****
+     */
+    protected function getWooSubstatuses()
+    {
+
+        $result = [];
+        $result[] = [
+            'status_id' => 'instock',
+            'name' => 'In Stock'
+        ];
+        $result[] = [
+            'status_id' => 'outofstock',
+            'name' => 'Out of Stock'
+        ];
+
+        global $wpdb;
+        $sql = "SELECT DISTINCT meta_value as stock_status FROM  {$wpdb->postmeta} WHERE meta_key = \"%s\"";
+        $sql = sprintf($sql, "_stock_status");
+        $st_statuses = $wpdb->get_results($sql, ARRAY_A);
+
+        foreach ($st_statuses as $key => $value) {
+            if (!in_array($value['stock_status'], ['instock', 'outofstock'])) {
+                $result[] = [
+                    'status_id' => $value['stock_status'],
+                    'name' => $value['stock_status']
+                ];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     *
+     */
+    protected function setMImage($pr_id, $img_id)
+    {
+        global $wpdb;
+        $sql = "SELECT COUNT(*) as count FROM  {$wpdb->postmeta} WHERE post_id = %s and meta_key = \"%s\"";
+        $sql = sprintf($sql, $pr_id, "_thumbnail_id");
+        $counter = $wpdb->get_row($sql, ARRAY_A)['count'];
+        if (!$counter) {
+            $sql = "INSERT INTO {$wpdb->postmeta} (meta_value, post_id, meta_key)
+                    VALUES (%s, %s, %s)";
+        } else {
+            $sql = "UPDATE {$wpdb->postmeta} SET meta_value = %s WHERE post_id = %s and meta_key = \"%s\"";
+        }
+        $wpdb->query($wpdb->prepare(
+            $sql, $img_id, $pr_id, "_thumbnail_id"
+        ));
+        // delete from galery
+        $this->removeProductImageById($pr_id, $img_id);
+        return true;
+    }
+
 
     /**
      * Set new product price
@@ -1503,9 +1740,8 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
      * @param $newPrice
      * @return false|int
      */
-    protected function updateProductInfo() {
-
-        $pr_id = $_REQUEST['product_id'];
+    protected function updateProductInfo($pr_id)
+    {
 
         global $wpdb;
 
@@ -1514,23 +1750,25 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
         $res = $wpdb->get_results($sql, ARRAY_A);
         if (!$res) return false;
 
-        $productInfoActial = new WC_Product($pr_id);
         # меняем колличество товара
         if ((int)$_REQUEST['quantity']) {
-            $productInfoActial->set_stock_quantity($_REQUEST['quantity']);
 
-            $sql = "UPDATE {$wpdb->postmeta} SET meta_value = %s WHERE post_id = %s and meta_key = %s";
+            $sql = "SELECT COUNT(*) as count FROM  {$wpdb->postmeta} WHERE post_id = %s and meta_key = \"%s\"";
+            $sql = sprintf($sql, $pr_id, "_stock");
+            $counter = $wpdb->get_row($sql, ARRAY_A)['count'];
+            if (!$counter) {
+                $sql = "INSERT INTO {$wpdb->postmeta} (meta_value, post_id, meta_key)
+                    VALUES (%s, %s, %s)";
+            } else {
+                $sql = "UPDATE {$wpdb->postmeta} SET meta_value = %s WHERE post_id = %s and meta_key = \"%s\"";
+            }
             $wpdb->query($wpdb->prepare(
                 $sql, $_REQUEST['quantity'], $pr_id, "_stock"
             ));
         }
-        # меняем картинки товара
-        if (is_array($_REQUEST['photos']) && $_REQUEST['photos']) {
-            // тут позже добавлю
-        }
+
         # меняем название товара
         if ($_REQUEST['name']) {
-            $productInfoActial->set_name($_REQUEST['name']);
 
             $sql = "UPDATE {$wpdb->posts} SET post_title = %s WHERE ID = %s ";
             $wpdb->query($wpdb->prepare(
@@ -1538,61 +1776,308 @@ if(in_array($sort_by, ['sum', 'date_added', 'quantity'])):
             ));
 
         }
-        # меняем полное писание товара
-        if ($_REQUEST['full_description']) {
-            $productInfoActial->set_description($_REQUEST['full_description']);
+        # меняем цену
+        if ($_REQUEST['price']) {
+            $sql = "SELECT COUNT(*) as count FROM  {$wpdb->postmeta} WHERE post_id = %s and meta_key = \"%s\"";
+            $sql = sprintf($sql, $pr_id, "_regular_price");
+            $counter = $wpdb->get_row($sql, ARRAY_A)['count'];
+            if (!$counter) {
+                $sql = "INSERT INTO {$wpdb->postmeta} (meta_value, post_id, meta_key)
+                    VALUES (%s, %s, %s)";
+            } else {
+                $sql = "UPDATE {$wpdb->postmeta} SET meta_value = %s WHERE post_id = %s and meta_key =\"%s\"";
+            }
+            $wpdb->query($wpdb->prepare(
+                $sql, $_REQUEST['price'], $pr_id, "_regular_price"
+            ));
+            $sql = "SELECT COUNT(*) as count FROM  {$wpdb->postmeta} WHERE post_id = %s and meta_key = \"%s\"";
+            $sql = sprintf($sql, $pr_id, "_sale_price");
+            $counter = $wpdb->get_row($sql, ARRAY_A)['count'];
+            if (!$counter) {
+                $sql = "INSERT INTO {$wpdb->postmeta} (meta_value, post_id, meta_key)
+                    VALUES (%s, %s, %s)";
+            } else {
+                $sql = "UPDATE {$wpdb->postmeta} SET meta_value = %s WHERE post_id = %s and meta_key =\"%s\"";
+            }
+            $wpdb->query($wpdb->prepare(
+                $sql, $_REQUEST['price'], $pr_id, "_sale_price"
+            ));
+
+        }
+        # меняем полное описание товара
+        if ($_REQUEST['description']) {
 
             $sql = "UPDATE {$wpdb->posts} SET post_content = %s WHERE ID = %s ";
             $wpdb->query($wpdb->prepare(
-                $sql, $_REQUEST['full_description'], $pr_id
+                $sql, $_REQUEST['description'], $pr_id
             ));
-        }
-        # меняем краткое описание товара
-        if ($_REQUEST['short_description']) {
-            $productInfoActial->set_short_description($_REQUEST['short_description']);
+            $text = $_REQUEST['description'];
+            $shortDescr = preg_replace("#[^\.]*\.#s", '', $text, 1);
+
+            # меняем краткое описание товара
 
             $sql = "UPDATE {$wpdb->posts} SET post_excerpt = %s WHERE ID = %s ";
             $wpdb->query($wpdb->prepare(
-                $sql, $_REQUEST['short_description'], $pr_id
+                $sql, $shortDescr, $pr_id
             ));
         }
         # меняем артикул
         if ($_REQUEST['sku']) {
-            $productInfoActial->set_sku($_REQUEST['sku']);
 
-            $sql = "UPDATE {$wpdb->postmeta} SET meta_value = %s WHERE post_id = %s and meta_key = %s";
+            $sql = "SELECT COUNT(*) as count FROM  {$wpdb->postmeta} WHERE post_id = %s and meta_key = \"%s\"";
+            $sql = sprintf($sql, $pr_id, "_sku");
+            $counter = $wpdb->get_row($sql, ARRAY_A)['count'];
+            if (!$counter) {
+                $sql = "INSERT INTO {$wpdb->postmeta} (meta_value, post_id, meta_key)
+                    VALUES (%s, %s, %s)";
+            } else {
+                $sql = "UPDATE {$wpdb->postmeta} SET meta_value = %s WHERE post_id = %s and meta_key = \"%s\"";
+            }
             $wpdb->query($wpdb->prepare(
                 $sql, $_REQUEST['sku'], $pr_id, "_sku"
             ));
         }
         # меняем статус остатка
-        if ($_REQUEST['stock_status'] && in_array($_REQUEST['stock_status'],['outofstock' , 'instock'])) {
-            $productInfoActial->set_stock_status($_REQUEST['stock_status']);
+        if ($_REQUEST['substatus'] && in_array($_REQUEST['substatus'], ['outofstock', 'instock'])) {
 
-            $sql = "UPDATE {$wpdb->postmeta} SET meta_value = %s WHERE post_id = %s and meta_key = %s";
+            $sql = "SELECT COUNT(*) as count FROM  {$wpdb->postmeta} WHERE post_id = %s and meta_key = \"%s\"";
+            $sql = sprintf($sql, $pr_id, "_stock_status");
+            $counter = $wpdb->get_row($sql, ARRAY_A)['count'];
+            if (!$counter) {
+                $sql = "INSERT INTO {$wpdb->postmeta} (meta_value, post_id, meta_key)
+                    VALUES (%s, %s, %s)";
+            } else {
+                $sql = "UPDATE {$wpdb->postmeta} SET meta_value = %s WHERE post_id = %s and meta_key = \"%s\"";
+            }
             $wpdb->query($wpdb->prepare(
-                $sql, $_REQUEST['stock_status'], $pr_id, "_stock_status"
+                $sql, $_REQUEST['substatus'], $pr_id, "_stock_status"
             ));
         }
         # меняем статус продукта
-        if ($_REQUEST['status']) {
-            $productInfoActial->set_status($_REQUEST['status']);
+        if ($_REQUEST['status'] && array_key_exists($_REQUEST['status'], get_post_statuses())) {
 
             $sql = "UPDATE {$wpdb->posts} SET post_status = %s WHERE ID = %s ";
             $wpdb->query($wpdb->prepare(
                 $sql, $_REQUEST['status'], $pr_id
             ));
         }
-        # меняем модель
-        if ($_REQUEST['model']) {
-            //var_dump($productInfoActial->get_attributes());
-            $productInfoActial->set_attributes(["Модель", $_REQUEST['model']]);
-            //var_dump($productInfoActial->get_attribute("Модель"));
-            //exit;
+        # меняем категорию
+        if ($_REQUEST['categories'] && (is_array($_REQUEST['categories']))) {
+
+            $query = $wpdb->prepare(
+                "DELETE FROM {$wpdb->term_relationships} WHERE object_id = %s ", $pr_id
+            );
+
+            $wpdb->query($query);
+
+            $cat_ids = $_REQUEST['categories'];
+            foreach ($cat_ids as $key => $value) {
+                $sql = "INSERT INTO {$wpdb->term_relationships} (object_id, term_taxonomy_id)
+                        VALUES (%s, %s)";
+
+                $wpdb->query($wpdb->prepare(
+                    $sql, $pr_id, (int)$value
+                ));
+            }
         }
 
-        return true;
+        # загружаем в галерею картинки
+        $this->loadImages($pr_id, false);
+
+
+        $img_arr = $this->getProductImages($pr_id);
+
+        return [
+            'product_id' => $pr_id,
+            'images' => $img_arr,
+        ];
     }
 
 
+    protected function loadImages($pr_id, $makeFirstMain = false)
+    {
+
+        global $wpdb;
+        $img_arr = [];
+        # загружаем в галерею картинки
+
+        if (isset($_FILES) && !empty($_FILES) && isset($_FILES['image'])) {
+
+
+            if (!function_exists('wp_handle_upload')) {
+                require_once(ABSPATH . 'wp-admin/includes/file.php');
+            }
+            $upload_overrides = array('test_form' => false);
+
+            $files = $_FILES['image'];
+
+            $counter = 0;
+            for ($i = 0; $i < count($files['name']); $i++) {
+
+                $uploadedfile = array(
+                    'name' => isset($files['name'][$i]) ? $files['name'][$i] : '',
+                    'type' => isset($files['type'][$i]) ? $files['type'][$i] : '',
+                    'tmp_name' => isset($files['tmp_name'][$i]) ? $files['tmp_name'][$i] : '',
+                    'error' => isset($files['error'][$i]) ? $files['error'][$i] : '',
+                    'size' => isset($files['size'][$i]) ? $files['size'][$i] : '',
+                );
+                $movefile = wp_handle_upload($uploadedfile, $upload_overrides);
+
+                if ($movefile && !isset($movefile['error'])) {
+                    $id = $this->custom_media_sideload_image($movefile['url'], $pr_id, $uploadedfile);
+                    $ufiles = get_post_meta($pr_id, '_product_image_gallery', true);
+                    if ($ufiles) $ufiles = explode(",", $ufiles);
+                    if (empty($ufiles)) $ufiles = array();
+                    $ufiles[] = $id;
+                    $ufiles = implode(',', $ufiles);
+                    update_post_meta($pr_id, '_product_image_gallery', $ufiles);
+                    if ($makeFirstMain && !$counter) {
+                        $this->setMImage($pr_id, $id); // записываем первую картинку как главную
+                    }
+                    $counter++;
+                }
+            }
+        }
+//        $sql = "SELECT meta_value as imgs FROM  {$wpdb->postmeta} WHERE post_id = %s and meta_key = \"%s\"";
+//        $sql = sprintf($sql, $pr_id, "_product_image_gallery");
+//        $old_img = $wpdb->get_row($sql, ARRAY_A)['imgs'];
+//        if ($old_img):
+//            $sql = "SELECT ID, post_name, guid as imd_path FROM  {$wpdb->posts} WHERE id IN (%s)";
+//            $sql = sprintf($sql, $old_img);
+//            $imgs = $wpdb->get_results($sql, ARRAY_A);
+//
+//            foreach ($imgs as $key => $value) {
+//                $img_arr[] = [
+//                    'image' => $value['imd_path'],
+//                    'image_id' => $value['ID'],
+//                ];
+//            }
+//        endif;
+
+        return true;//$img_arr;
+    }
+
+    /**
+     * @param $category_id
+     * @return bool|string
+     */
+    protected function isCategoryHasChild($category_id)
+    {
+
+        global $wpdb;
+        $sql = "SELECT term_taxonomy_id FROM {$wpdb->term_taxonomy} WHERE parent = %s and taxonomy = \"%s\"";
+        $sql = sprintf($sql, $category_id, "product_cat");
+        $res = $wpdb->get_row($sql, ARRAY_A);
+
+        return $res['term_taxonomy_id'] ? true : false;
+
+    }
+
+    /**
+     * @param $parrent_id
+     */
+    protected function getCategoriesByParentId($parrent_id)
+    {
+
+        if ((int)$parrent_id === -1) $parrent_id = 0;
+# 
+        global $wpdb;
+        $sql = "SELECT tt.term_taxonomy_id, t.name, tt.parent FROM {$wpdb->term_taxonomy} tt 
+            INNER JOIN {$wpdb->terms} t ON t.term_id = tt.term_taxonomy_id WHERE tt.parent = %s and tt.taxonomy = \"%s\"";
+        $sql = sprintf($sql, $parrent_id, "product_cat");
+
+        $res = $wpdb->get_results($sql, ARRAY_A);
+        $arr = [];
+        if ($res) {
+            foreach ($res as $key => $value) {
+                $arr[] = [
+                    'category_id' => $value['term_taxonomy_id'],
+                    'name' => $value['name'],
+                    'parent' => $this->isCategoryHasChild($value['term_taxonomy_id'])
+                ];
+            }
+        }
+        return $arr;
+
+    }
+
+
+    protected function removeProductMainImage($pr_id)
+    {
+        if (!$pr_id) return false;
+        require_once ABSPATH . 'wp-admin/includes/image.php';
+
+
+        $product = new WC_Product($pr_id);
+        $main_img_id = $product->get_image_id();
+        if ($main_img_id) {
+            $this->removeProductImageById($pr_id, $main_img_id);
+
+            unlink(get_the_post_thumbnail_url($pr_id));
+            #  удаляем с базы
+            delete_post_thumbnail($pr_id);
+            #  подстраховываемся
+            #         $query = $wpdb->prepare(
+            #             "DELETE FROM {$wpdb->term_postmeta} WHERE post_id = %s AND meta_key = %s", $pr_id, '_thumbnail_id'
+            #         );
+            #
+            #         $wpdb->query($query);
+
+            #  удаляем с сервера
+
+            wp_delete_attachment($pr_id);
+            $src = wp_get_attachment_image_src($pr_id);
+            unlink($src);
+
+            return $product->get_image_id();
+        } else {
+            return [
+                'error'   => true,
+                'message' => 'Error. Can not delete empty image.',
+            ];
+        }
+    }
+
+    protected function removeProductImageById($pr_id, $img_id)
+    {
+        if (!$pr_id) return false;
+#         require_once ABSPATH . 'wp-admin/includes/image.php';
+#         delete_metadata()
+        global $wpdb;
+        $sql = "SELECT meta_value as galery FROM {$wpdb->postmeta} WHERE post_id = %s and meta_key = \"%s\"";
+        $sql = sprintf($sql, $pr_id, "_product_image_gallery");
+
+        $res = $wpdb->get_row($sql, ARRAY_A)['galery'];
+        $imgs = [];
+        if ($res) $imgs = explode(',', $res);
+        if (($key = array_search((string)$img_id, $imgs)) !== FALSE) {
+            unset($imgs[$key]);
+        }
+
+        $result = implode(",", $imgs);
+
+        $sql = "UPDATE {$wpdb->postmeta} SET meta_value = %s WHERE post_id = %s and meta_key = \"%s\"";
+
+        $wpdb->query($wpdb->prepare(
+            $sql, $result, $pr_id, "_product_image_gallery"
+        ));
+        return true;
+    }
+
+}
+
+
+## Удаляет все вложения записи (прикрепленные медиафайлы) записи вместе с записью (постом)
+add_action('before_delete_post', 'delete_attachments_with_post');
+function delete_attachments_with_post($postid)
+{
+    $post = get_post($postid);
+
+    #  проверим тип записи для которых нужно удалять вложение
+    if (in_array($post->post_type, ['article', 'question'])) {
+        $attachments = get_children(array('post_type' => 'attachment', 'post_parent' => $postid));
+        if ($attachments) {
+            foreach ($attachments as $attachment) wp_delete_attachment($attachment->ID);
+        }
+    }
 }

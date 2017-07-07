@@ -4,11 +4,10 @@ Plugin Name: Woocommerce mobile admin API
 Plugin URI:
 Description: This plugin creates a custom API for working with the WooCommerce application.
 It allows you to keep your online business under control wherever you are. All you need is just to have on hand your android or ios mobile phone and Internet connection.
-Version: 1.0.1
+Version: 2.0.0
 Author: Pinta WebWare
 Author URI: https://github.com/pintawebware
 */
-
 
 /**
  * Check if WooCommerce is active
@@ -16,7 +15,6 @@ Author URI: https://github.com/pintawebware
 
 if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
 
-//    if (!class_exists('PintaClass')) {
     register_activation_hook(__FILE__, 'woocommerce_pinta_activation');
     register_deactivation_hook(__FILE__, 'woocommerce_pinta_deactivation');
     // регистрируем действие при удалении
@@ -32,7 +30,6 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
         $pinta = new PintaClass();
     }
 
-//    } // if (!class///
 } else {
     add_action('admin_notices', 'connector_admin_notices');
 }
