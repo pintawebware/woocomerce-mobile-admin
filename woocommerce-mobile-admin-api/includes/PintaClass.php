@@ -11,7 +11,9 @@ class PintaClass extends FunctionsClass
 
     public function __construct()
     {
+		
         parent:: __construct();
+
         $this->check_db();
         $type = filterNull($_GET['route']);
 
@@ -124,13 +126,14 @@ class PintaClass extends FunctionsClass
      */
     private function login()
     {
-
+        
         if (!filterNull($_REQUEST['username']) || !filterNull($_REQUEST['password'])) {
             echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Missing some params', 'status' => false]);
             die;
         }
 
         $user = $this->check_Auth($_REQUEST['username'], $_REQUEST['password']);
+
         if (!filterNull($user['ID'])) {
             echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Incorrect username or password', 'status' => false]);
             die;

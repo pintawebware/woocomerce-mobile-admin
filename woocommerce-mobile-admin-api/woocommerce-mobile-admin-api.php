@@ -15,6 +15,8 @@ Author URI: https://github.com/pintawebware
 
 if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
 
+	
+
     register_activation_hook(__FILE__, 'woocommerce_pinta_activation');
     register_deactivation_hook(__FILE__, 'woocommerce_pinta_deactivation');
     // регистрируем действие при удалении

@@ -1,6 +1,7 @@
 <?php
 require_once(dirname(WP_CONTENT_DIR) . "/wp-includes/pluggable.php");
 require_once(dirname(WP_CONTENT_DIR) . "/wp-includes/class-phpmailer.php");
+include_once(WOOCOMMERCE_PINTA_DIR . 'includes/FunctionsClass.php');
 
 function filterNull($param, $default = 0)
 {
@@ -25,33 +26,33 @@ function get_order_statuses()
     return $statuses_arr;
 }
 
-add_action('phpmailer_init', 'send_smtp_email');
-function send_smtp_email($phpmailer)
-{
-    // Define that we are sending with SMTP
-    $phpmailer->isSMTP();
-
-    // The hostname of the mail server
-    $phpmailer->Host = "smtp.yandex.ru";
-
-    // Use SMTP authentication (true|false)
-    $phpmailer->SMTPAuth = true;
-
-    // SMTP port number - likely to be 25, 465 or 587
-    $phpmailer->Port = "465";
-
-    // Username to use for SMTP authentication
-    $phpmailer->Username = "vikulya.grishko@yandex.ru";
-    $phpmailer->From = "vikulya.grishko@yandex.ru"; // должен соответствовать  $phpmailer->Username
-
-    $phpmailer->FromName = get_site_option('site_name') ? get_site_option('site_name') : "Victoria";
-
-    // Password to use for SMTP authentication
-    $phpmailer->Password = "05052011r";
-
-    // The encryption system to use - ssl (deprecated) or tls
-    $phpmailer->SMTPSecure = "ssl";
-}
+//add_action('phpmailer_init', 'send_smtp_email');
+//function send_smtp_email($phpmailer)
+//{
+//    // Define that we are sending with SMTP
+//    $phpmailer->isSMTP();
+//
+//    // The hostname of the mail server
+//    $phpmailer->Host = "smtp.yandex.ru";
+//
+//    // Use SMTP authentication (true|false)
+//    $phpmailer->SMTPAuth = true;
+//
+//    // SMTP port number - likely to be 25, 465 or 587
+//    $phpmailer->Port = "465";
+//
+//    // Username to use for SMTP authentication
+//    $phpmailer->Username = "vikulya.grishko@yandex.ru";
+//    $phpmailer->From = "vikulya.grishko@yandex.ru"; // должен соответствовать  $phpmailer->Username
+//
+//    $phpmailer->FromName = get_site_option('site_name') ? get_site_option('site_name') : "Victoria";
+//
+//    // Password to use for SMTP authentication
+//    $phpmailer->Password = "05052011r";
+//
+//    // The encryption system to use - ssl (deprecated) or tls
+//    $phpmailer->SMTPSecure = "ssl";
+//}
 
 function changeOrderStatus($orderID = 0, $statusID = 0, $comment = '', $inform = false)
 {

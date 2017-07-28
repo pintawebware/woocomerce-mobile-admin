@@ -1,6 +1,7 @@
 <?php
 
 include_once(WOOCOMMERCE_PINTA_DIR . 'includes/functions.php');
+include_once('wp-includes/class-phpass.php');
 
 /**
  * Class PintaFunctionsClass
@@ -186,9 +187,10 @@ class FunctionsClass
         }
 
         $result = $wpdb->get_row($query, ARRAY_A);
+
         $addr = [
             "payment_method" => $result["payment_method"],
-            "shipping_method" => $result["shipping_method"],
+            "shipping_method" => !empty($result["shipping_method"]) ? $result["shipping_method"] : '',
             "shipping_address" => $result['shipping_address_house']
                 . ' ' . $result['shipping_address_flat'] . ', '
                 . $result['shipping_city'] . ' ' . $result['shipping_country']
@@ -990,10 +992,11 @@ class FunctionsClass
     protected static function check_auth($username, $pass)
     {
         global $wpdb;
-
         $wp_hasher = new PasswordHash(8, TRUE);
-        $sql = "SELECT ID, user_login, user_pass FROM {$wpdb->prefix}users WHERE user_login = %s AND user_status = %s";
-        $query = $wpdb->prepare($sql, $username, '1');
+        $sql = "SELECT ID, user_login, user_pass FROM {$wpdb->prefix}users WHERE user_login = %s";
+
+        $query = $wpdb->prepare($sql, $username);
+
         $user = $wpdb->get_row($query, ARRAY_A);
 
         if ($wp_hasher->CheckPassword($pass, $user['user_pass'])) {
@@ -1503,7 +1506,7 @@ class FunctionsClass
         );
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https:# fcm.googleapis.com/fcm/send');
+        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
