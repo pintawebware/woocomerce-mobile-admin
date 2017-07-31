@@ -135,6 +135,7 @@ function action_woocommerce_new_order( $order_id ) {
     ];
 
     $devices = $funclass->getAllUserDevices(); # отправляем на все девайсы????
+    
     if ($devices):
         $ids = [];
     foreach ( $devices as  $dev ):
@@ -142,17 +143,26 @@ function action_woocommerce_new_order( $order_id ) {
     endforeach;
         if ($ids):
         foreach ( $ids as  $key => $dev ):
-
-            if (array_key_exists($key, $msg)):
-                $funclass->sendCurl( [
-                    'registration_ids' => $ids[$key],
-                    'notification'     => $msg[$key],
-                ] );
-            endif;;
+            if ( $key == 'android' ) {
+                if (array_key_exists($key, $msg)):
+                    $funclass->sendCurl( [
+                        'registration_ids' => $ids[$key],
+                        'data'             => $msg[$key],
+                    ] );
+                endif;;
+            } else {
+                if (array_key_exists($key, $msg)):
+                    $funclass->sendCurl( [
+                        'registration_ids' => $ids[$key],
+                        'notification'     => $msg[$key],
+                    ] );
+                endif;;
+            }
         endforeach;
         endif;
     endif;
     endif;
+
 
 };
 
