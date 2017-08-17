@@ -993,14 +993,40 @@ class FunctionsClass
     {
         global $wpdb;
         $wp_hasher = new PasswordHash(8, TRUE);
-        $sql = "SELECT ID, user_login, user_pass FROM {$wpdb->prefix}users WHERE user_login = %s";
+        $sql = "SELECT ID, user_login, user_pass FROM $wpdb->users WHERE user_login = %s";
 
         $query = $wpdb->prepare($sql, $username);
 
         $user = $wpdb->get_row($query, ARRAY_A);
 
         if ($wp_hasher->CheckPassword($pass, $user['user_pass'])) {
-            return $user;
+            if (is_multisite()) {
+                if (in_array($user['user_login'], get_super_admins())) {
+                    return $user;
+                }else{
+                    $site_url = get_site_url();
+                    $order   = array("http://", "https://");
+                    $site_url = str_replace($order, '', $site_url);
+
+                    $wp_site_info = get_sites(array('domain' => $site_url))[0];
+                    $wp_capabilities = "wp_".$wp_site_info->blog_id."_capabilities";
+                    
+                    $sql = "SELECT meta_value FROM $wpdb->usermeta WHERE user_id = %s AND meta_key = '".$wp_capabilities."'";
+                    $query = $wpdb->prepare($sql, $user["ID"]);
+                    $user_capabilities = $wpdb->get_row($query, ARRAY_A);
+                    $user_capabilities = unserialize($user_capabilities['meta_value']);
+
+                    foreach ($user_capabilities as $key => $value) {
+                        if ($key == 'administrator') {
+                            if ($value == true) {
+                                return $user;
+                            }
+                        }
+                    }
+                }
+            }else{
+                return $user;
+            } 
         }
 
         return false;

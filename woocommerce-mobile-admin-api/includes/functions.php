@@ -135,7 +135,7 @@ function action_woocommerce_new_order( $order_id ) {
     ];
 
     $devices = $funclass->getAllUserDevices(); # отправляем на все девайсы????
-    
+
     if ($devices):
         $ids = [];
     foreach ( $devices as  $dev ):
@@ -162,7 +162,6 @@ function action_woocommerce_new_order( $order_id ) {
         endif;
     endif;
     endif;
-
 
 };
 
