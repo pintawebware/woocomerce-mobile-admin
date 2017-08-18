@@ -1910,7 +1910,7 @@ class PintaClass extends FunctionsClass
             die;
         }
 
-        $result = $this->setMImage($pr_id, $img_id);
+        $result = $this->setMImage($pr_id, $img_id, true);
 
         if (!$result) {
             echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Error. Try again later.', 'status' => false]);

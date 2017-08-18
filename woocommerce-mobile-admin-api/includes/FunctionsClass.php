@@ -1741,12 +1741,14 @@ class FunctionsClass
     /**
      *
      */
-    protected function setMImage($pr_id, $img_id)
+    protected function setMImage($pr_id, $img_id, $only_image = false)
     {
         global $wpdb;
-        $sql = "SELECT COUNT(*) as count FROM  {$wpdb->postmeta} WHERE post_id = %s and meta_key = \"%s\"";
+        $sql = "SELECT COUNT(*) as count, `meta_value` FROM  {$wpdb->postmeta} WHERE post_id = %s and meta_key = \"%s\"";
         $sql = sprintf($sql, $pr_id, "_thumbnail_id");
         $counter = $wpdb->get_row($sql, ARRAY_A)['count'];
+        $old_img = $wpdb->get_row($sql, ARRAY_A)['meta_value'];
+
         if (!$counter) {
             $sql = "INSERT INTO {$wpdb->postmeta} (meta_value, post_id, meta_key)
                     VALUES (%s, %s, %s)";
@@ -1758,6 +1760,10 @@ class FunctionsClass
         ));
         // delete from galery
         $this->removeProductImageById($pr_id, $img_id);
+        if ($only_image) {
+            $this->movePrimaryImage($pr_id, $old_img);
+        }
+
         return true;
     }
 
@@ -2084,6 +2090,35 @@ class FunctionsClass
         }
 
         $result = implode(",", $imgs);
+
+        $sql = "UPDATE {$wpdb->postmeta} SET meta_value = %s WHERE post_id = %s and meta_key = \"%s\"";
+
+        $wpdb->query($wpdb->prepare(
+            $sql, $result, $pr_id, "_product_image_gallery"
+        ));
+        return true;
+    }
+
+    protected function movePrimaryImage($pr_id, $img_id)
+    {
+        if (!$pr_id || !$img_id) return false;
+
+        global $wpdb;
+
+        $sql = "SELECT meta_value as galery FROM {$wpdb->postmeta} WHERE post_id = %s and meta_key = \"%s\"";
+        $sql = sprintf($sql, $pr_id, "_product_image_gallery");
+        $galery = $wpdb->get_row($sql, ARRAY_A)['galery'];
+
+        if ($galery) (array)$images = explode(',', $galery);
+
+        if(stristr($img_id, ',')){
+            (array)$new_images = explode(',', $img_id);
+            $images = array_merge($images, $new_images);
+        }else{
+            $images[] = $img_id;
+        }
+
+        $result = implode(",", $images);
 
         $sql = "UPDATE {$wpdb->postmeta} SET meta_value = %s WHERE post_id = %s and meta_key = \"%s\"";
 
