@@ -1,7 +1,7 @@
 <?php
 
 include_once(WOOCOMMERCE_PINTA_DIR . 'includes/functions.php');
-include_once('wp-includes/class-phpass.php');
+// include_once('wp-includes/class-phpass.php');
 
 /**
  * Class PintaFunctionsClass
@@ -992,14 +992,16 @@ class FunctionsClass
     protected static function check_auth($username, $pass)
     {
         global $wpdb;
-        $wp_hasher = new PasswordHash(8, TRUE);
+//        $wp_hasher = new PasswordHash(8, TRUE);
+
         $sql = "SELECT ID, user_login, user_pass FROM $wpdb->users WHERE user_login = %s";
 
         $query = $wpdb->prepare($sql, $username);
 
         $user = $wpdb->get_row($query, ARRAY_A);
 
-        if ($wp_hasher->CheckPassword($pass, $user['user_pass'])) {
+//        if ($wp_hasher->CheckPassword($pass, $user['user_pass'])) {
+        if (wp_check_password($pass, $user['user_pass'])) {
             if (is_multisite()) {
                 if (in_array($user['user_login'], get_super_admins())) {
                     return $user;
