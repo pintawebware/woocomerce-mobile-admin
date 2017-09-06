@@ -80,13 +80,13 @@ function changeOrderStatus($orderID = 0, $statusID = 0, $comment = '', $inform =
         wp_insert_comment($post2);
     endif;
 
-    if ($inform) {
+if ($inform) {
         $orderinfo = (new FunctionsClass())->getOrders($orderID);
         $billingEmail = $orderinfo['email'];
         if ($billingEmail) {
             $from_name = get_site_option('site_name') == '' ? 'WordPress' : esc_html(get_site_option('site_name'));
 
-            $admin_email = 'v.grishko@pinta.com.ua';
+            $admin_email = get_option('admin_email');
             $message_headers = "From: \"{$from_name}\" <{$admin_email}>\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n";
 
             $subject = 'Статус Вашего заказа изменился';
@@ -94,7 +94,7 @@ function changeOrderStatus($orderID = 0, $statusID = 0, $comment = '', $inform =
                 ' '. $comment . ' ' . sprintf('Статус Вашего заказа изменен с %s на %s.', get_order_statuses()[$old_status],
                     get_order_statuses()[$statusID]);
 
-            wp_mail('vikulya.grishko@gmail.com', strip_tags($subject), wordwrap($message, 70), $message_headers);
+            wp_mail($admin_email, strip_tags($subject), wordwrap($message, 70), $message_headers);
             wp_mail($billingEmail, strip_tags($subject), wordwrap($message, 70), $message_headers);
         }
     }
