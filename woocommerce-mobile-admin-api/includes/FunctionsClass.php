@@ -804,6 +804,7 @@ class FunctionsClass
                 $allproductinfo = new WC_Product($orderproduct["pr_id"]);
                 $result[$key]['price'] = (string)number_format(floatval($allproductinfo->get_price()), 2, '.', '');
                 $result[$key]['currency_code'] = get_woocommerce_currency();
+                $result[$key]['model'] = get_post_meta($orderproduct["pr_id"], '_sku', true);
                 $result[$key]['quantity'] = (string)($allproductinfo->get_stock_quantity() ?
                     $allproductinfo->get_stock_quantity() : '0');
 
