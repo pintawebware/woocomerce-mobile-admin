@@ -884,6 +884,7 @@ class FunctionsClass
             foreach ($products as $key => $orderproduct) {
                 $res[$key]['product_id'] = (string)$orderproduct["pr_id"];
                 $res[$key]['name'] = (string)$orderproduct['pr_name'];
+                $res[$key]['model'] = get_post_meta($orderproduct["pr_id"], '_sku', true);
                 # количество продуктов
                 $res[$key]['quantity'] = (string)$orderproduct['pr_quantity'];
                 # Стоимость доставки
