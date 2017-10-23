@@ -1605,7 +1605,7 @@ class FunctionsClass
 #         wp_set_object_terms($post_id_id, 'simple', 'product_type');
         update_post_meta($post_id, '_visibility', 'visible');
         update_post_meta($post_id, '_stock_status', filterNull($_REQUEST['substatus'], 'instock'));
-        update_post_meta($post_id, '_downloadable', 'yes');
+        update_post_meta($post_id, '_downloadable', 'no');
         update_post_meta($post_id, 'total_sales', '0');
 #         update_post_meta( $post_id, '_downloadable', 'yes');
 #         update_post_meta( $post_id, '_virtual', 'yes');
@@ -1623,7 +1623,7 @@ class FunctionsClass
         update_post_meta($post_id, '_sale_price_dates_to', "");
         update_post_meta($post_id, '_price', filterNull($_REQUEST['price'], 0));
         update_post_meta($post_id, '_sold_individually', "");
-        update_post_meta($post_id, '_manage_stock', "no");
+        update_post_meta($post_id, '_manage_stock', "yes");
         update_post_meta($post_id, '_backorders', "no");
         update_post_meta($post_id, '_stock', filterNull($_REQUEST['quantity'], 0));
 
