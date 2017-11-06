@@ -583,11 +583,12 @@ class FunctionsClass
             $allproductinfo = new WC_Product($products["pr_id"]);
 
             $result['name'] = $allproductinfo->get_name();
+            $result['price'] = (string)number_format(floatval($allproductinfo->get_price()), 2, '.', '');
 
             $sql = "SELECT meta_value as price FROM  {$wpdb->postmeta} WHERE post_id = %s and meta_key = \"%s\"";
             $sql = sprintf($sql, $products["pr_id"], "_sale_price");
             $price = $wpdb->get_row($sql, ARRAY_A)['price'];
-            $result['price'] = (string)number_format(floatval($price), 2, '.', '');# (string)number_format(floatval($allproductinfo->get_price()), 2, '.', '');
+            //$result['price'] = (string)number_format(floatval($price), 2, '.', '');# (string)number_format(floatval($allproductinfo->get_price()), 2, '.', '');
             $result['currency_code'] = get_woocommerce_currency();
             $result['quantity'] = (string)($allproductinfo->get_stock_quantity() ?
                 $allproductinfo->get_stock_quantity() : '0');
