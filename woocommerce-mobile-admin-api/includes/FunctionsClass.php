@@ -1816,11 +1816,12 @@ class FunctionsClass
             ));
 
         }
-        # меняем цену
+		# меняем цену
         if ($_REQUEST['price']) {
             $sql = "SELECT COUNT(*) as count FROM  {$wpdb->postmeta} WHERE post_id = %s and meta_key = \"%s\"";
             $sql = sprintf($sql, $pr_id, "_regular_price");
             $counter = $wpdb->get_row($sql, ARRAY_A)['count'];
+
             if (!$counter) {
                 $sql = "INSERT INTO {$wpdb->postmeta} (meta_value, post_id, meta_key)
                     VALUES (%s, %s, %s)";
@@ -1831,7 +1832,7 @@ class FunctionsClass
                 $sql, $_REQUEST['price'], $pr_id, "_regular_price"
             ));
             $sql = "SELECT COUNT(*) as count FROM  {$wpdb->postmeta} WHERE post_id = %s and meta_key = \"%s\"";
-            $sql = sprintf($sql, $pr_id, "_sale_price");
+            $sql = sprintf($sql, $pr_id, "_price");
             $counter = $wpdb->get_row($sql, ARRAY_A)['count'];
             if (!$counter) {
                 $sql = "INSERT INTO {$wpdb->postmeta} (meta_value, post_id, meta_key)
@@ -1840,7 +1841,7 @@ class FunctionsClass
                 $sql = "UPDATE {$wpdb->postmeta} SET meta_value = %s WHERE post_id = %s and meta_key =\"%s\"";
             }
             $wpdb->query($wpdb->prepare(
-                $sql, $_REQUEST['price'], $pr_id, "_sale_price"
+                $sql, $_REQUEST['price'], $pr_id, "_price"
             ));
 
         }
