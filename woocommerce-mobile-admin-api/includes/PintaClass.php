@@ -371,7 +371,7 @@ class PintaClass extends FunctionsClass
 
                         if ($clients['user_registered']):
                             foreach ($clients['user_registered'] as $value) {
-                                $hour = strtotime($value['date_added']);
+                                $hour = strtotime($value);
                                 $hour = date("h", $hour);
 
                                 if ($hour == $i) {
