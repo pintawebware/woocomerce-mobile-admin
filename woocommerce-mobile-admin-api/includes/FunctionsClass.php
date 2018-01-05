@@ -583,12 +583,8 @@ class FunctionsClass
             $allproductinfo = new WC_Product($products["pr_id"]);
 
             $result['name'] = $allproductinfo->get_name();
-            $result['price'] = (string)number_format(floatval($allproductinfo->get_price()), 2, '.', '');
+            $result['price'] = (string)number_format(floatval($allproductinfo->get_regular_price()), 2, '.', '');
 
-            $sql = "SELECT meta_value as price FROM  {$wpdb->postmeta} WHERE post_id = %s and meta_key = \"%s\"";
-            $sql = sprintf($sql, $products["pr_id"], "_sale_price");
-            $price = $wpdb->get_row($sql, ARRAY_A)['price'];
-            //$result['price'] = (string)number_format(floatval($price), 2, '.', '');# (string)number_format(floatval($allproductinfo->get_price()), 2, '.', '');
             $result['currency_code'] = get_woocommerce_currency();
             $result['quantity'] = (string)($allproductinfo->get_stock_quantity() ?
                 $allproductinfo->get_stock_quantity() : '0');
@@ -803,7 +799,7 @@ class FunctionsClass
                 $result[$key]['name'] = $orderproduct['pr_name'];
                 # Объект продукта WP
                 $allproductinfo = new WC_Product($orderproduct["pr_id"]);
-                $result[$key]['price'] = (string)number_format(floatval($allproductinfo->get_price()), 2, '.', '');
+                $result[$key]['price'] = (string)number_format(floatval($allproductinfo->get_regular_price()), 2, '.', '');
                 $result[$key]['currency_code'] = get_woocommerce_currency();
                 $result[$key]['model'] = get_post_meta($orderproduct["pr_id"], '_sku', true);
                 $result[$key]['quantity'] = (string)($allproductinfo->get_stock_quantity() ?
@@ -1831,18 +1827,21 @@ class FunctionsClass
             $wpdb->query($wpdb->prepare(
                 $sql, $_REQUEST['price'], $pr_id, "_regular_price"
             ));
-            $sql = "SELECT COUNT(*) as count FROM  {$wpdb->postmeta} WHERE post_id = %s and meta_key = \"%s\"";
-            $sql = sprintf($sql, $pr_id, "_price");
-            $counter = $wpdb->get_row($sql, ARRAY_A)['count'];
-            if (!$counter) {
-                $sql = "INSERT INTO {$wpdb->postmeta} (meta_value, post_id, meta_key)
-                    VALUES (%s, %s, %s)";
-            } else {
-                $sql = "UPDATE {$wpdb->postmeta} SET meta_value = %s WHERE post_id = %s and meta_key =\"%s\"";
-            }
-            $wpdb->query($wpdb->prepare(
-                $sql, $_REQUEST['price'], $pr_id, "_price"
-            ));
+
+            delete_post_meta($pr_id, '_price');
+
+            // $sql = "SELECT COUNT(*) as count FROM  {$wpdb->postmeta} WHERE post_id = %s and meta_key = \"%s\"";
+            // $sql = sprintf($sql, $pr_id, "_price");
+            // $counter = $wpdb->get_row($sql, ARRAY_A)['count'];
+            // if (!$counter) {
+            //     $sql = "INSERT INTO {$wpdb->postmeta} (meta_value, post_id, meta_key)
+            //         VALUES (%s, %s, %s)";
+            // } else {
+            //     $sql = "UPDATE {$wpdb->postmeta} SET meta_value = %s WHERE post_id = %s and meta_key =\"%s\"";
+            // }
+            // $wpdb->query($wpdb->prepare(
+            //     $sql, $_REQUEST['price'], $pr_id, "_price"
+            // ));
 
         }
         # меняем полное описание товара
