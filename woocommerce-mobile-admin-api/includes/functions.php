@@ -54,7 +54,7 @@ function get_order_statuses()
 //    $phpmailer->SMTPSecure = "ssl";
 //}
 
-function changeOrderStatus($orderID = 0, $statusID = 0, $comment = '', $inform = false)
+function changeOrderStatus($orderID = 0, $statusID = 0, $comment = '', $inform = false, $lang )
 {
     if (!$_REQUEST['route']) return;
     $post_object = get_post($orderID);
@@ -80,7 +80,7 @@ function changeOrderStatus($orderID = 0, $statusID = 0, $comment = '', $inform =
         wp_insert_comment($post2);
     endif;
 
-if ($inform) {
+    if ($inform) {
         $orderinfo = (new FunctionsClass())->getOrders($orderID);
         $billingEmail = $orderinfo['email'];
         if ($billingEmail) {
@@ -89,10 +89,14 @@ if ($inform) {
             $admin_email = get_option('admin_email');
             $message_headers = "From: \"{$from_name}\" <{$admin_email}>\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n";
 
-            $subject = 'Статус Вашего заказа изменился';
-            $message = 'Уважаемый(-ая) ' . $orderinfo['fio'] . '!' .
-                ' '. $comment . ' ' . sprintf('Статус Вашего заказа изменен с %s на %s.', get_order_statuses()[$old_status],
-                    get_order_statuses()[$statusID]);
+            if ( $lang == 'ru' ) {
+                $subject = 'Статус Вашего заказа изменился';
+                $message = 'Уважаемый(-ая) ' . $orderinfo['fio'] . '!' . ' '. $comment . ' ' . sprintf('Статус Вашего заказа изменен с %s на %s.', get_order_statuses()[$old_status], get_order_statuses()[$statusID]);
+            } else {
+                $subject = 'Your order status has changed';
+                $message = 'Dear ' . $orderinfo['fio'] . '!' . ' '. $comment . ' ' . sprintf('Your order status has been changed from %s on %s.', get_order_statuses()[$old_status], get_order_statuses()[$statusID]);
+            }
+
 
             wp_mail($admin_email, strip_tags($subject), wordwrap($message, 70), $message_headers);
             wp_mail($billingEmail, strip_tags($subject), wordwrap($message, 70), $message_headers);

@@ -1154,6 +1154,7 @@ class PintaClass extends FunctionsClass
      * @apiParam {Number} status_id unique status ID.
      * @apiParam {Token} token your unique token.
      * @apiParam {Boolean} inform status of the informing client.
+     * @apiParam {String} lang Code code of the letter template.
      *
      * @apiSuccess {Number} version  Current API version.
      * @apiSuccess {String} name Name of the new status.
@@ -1198,12 +1199,13 @@ class PintaClass extends FunctionsClass
         $orderID = $_REQUEST['order_id'];
         $comment = filterNull($_REQUEST['comment'], '');
         $inform = filterNull($_REQUEST['inform'], false);
+        $lang = isset($_REQUEST['lang']) ? $_REQUEST['lang'] : 'ru';
 
         if (!$this->isValidStatus($statusID)) {
             echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Unknown status params', 'status' => false]);
             die;
         }
-        $response = changeOrderStatus($orderID, $statusID, $comment, $inform);
+        $response = changeOrderStatus($orderID, $statusID, $comment, $inform, $lang);
         if (!$response) {
             echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Error', 'status' => false]);
             die;
