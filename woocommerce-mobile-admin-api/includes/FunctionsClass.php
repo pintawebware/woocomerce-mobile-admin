@@ -1830,18 +1830,18 @@ class FunctionsClass
 
             delete_post_meta($pr_id, '_price');
 
-            // $sql = "SELECT COUNT(*) as count FROM  {$wpdb->postmeta} WHERE post_id = %s and meta_key = \"%s\"";
-            // $sql = sprintf($sql, $pr_id, "_price");
-            // $counter = $wpdb->get_row($sql, ARRAY_A)['count'];
-            // if (!$counter) {
-            //     $sql = "INSERT INTO {$wpdb->postmeta} (meta_value, post_id, meta_key)
-            //         VALUES (%s, %s, %s)";
-            // } else {
-            //     $sql = "UPDATE {$wpdb->postmeta} SET meta_value = %s WHERE post_id = %s and meta_key =\"%s\"";
-            // }
-            // $wpdb->query($wpdb->prepare(
-            //     $sql, $_REQUEST['price'], $pr_id, "_price"
-            // ));
+            $sql = "SELECT COUNT(*) as count FROM  {$wpdb->postmeta} WHERE post_id = %s and meta_key = \"%s\"";
+            $sql = sprintf($sql, $pr_id, "_price");
+            $counter = $wpdb->get_row($sql, ARRAY_A)['count'];
+            if (!$counter) {
+                $sql = "INSERT INTO {$wpdb->postmeta} (meta_value, post_id, meta_key)
+                    VALUES (%s, %s, %s)";
+            } else {
+                $sql = "UPDATE {$wpdb->postmeta} SET meta_value = %s WHERE post_id = %s and meta_key =\"%s\"";
+            }
+            $wpdb->query($wpdb->prepare(
+                $sql, $_REQUEST['price'], $pr_id, "_price"
+            ));
 
         }
         # меняем полное описание товара
