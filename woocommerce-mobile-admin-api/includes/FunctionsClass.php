@@ -598,6 +598,17 @@ class FunctionsClass
                 ? get_post_statuses()[$allproductinfo->get_status()] : 'Draft';
             $result['categories'] = $this->get_categories($products["pr_id"]);
 
+            $attributes = $allproductinfo->get_attributes();
+            foreach ($attributes as $attribute) {
+                $attribute_record = array();
+                $attribute_record['option_name'] = $attribute->get_name(); 
+                $attribute_record['option_id'] = $attribute->get_id(); 
+                $attribute_record['option_value'] = $attribute->get_options();
+                $result['options']['individual'][] = $attribute_record; 
+            }
+
+            $result['options']['general'] = $this->get_options($products["pr_id"]);
+
             $descript = $allproductinfo->get_description();
             $szSearchPattern = '~<img [^>]* />~';
             preg_match_all($szSearchPattern, $descript, $aPics);
@@ -660,6 +671,34 @@ class FunctionsClass
         }
         return $result;
     }
+
+    /**
+     * @param $product_id
+     */
+    protected function get_options($product_id)
+    {
+        global $wpdb;
+
+        $product_attributes_query = "SELECT 
+                                                wat.attribute_id                option_id,
+                                                wat.attribute_label             option_name,
+                                                t.term_id                       option_value_id,
+                                                t.name                          option_value_name 
+                                           FROM {$wpdb->prefix}term_taxonomy                    tt 
+                                     INNER JOIN {$wpdb->prefix}term_relationships               tr 
+                                             ON tr.term_taxonomy_id = tt.term_taxonomy_id 
+                                     INNER JOIN {$wpdb->prefix}terms                            t 
+                                             ON t.term_id = tt.term_id 
+                                     INNER JOIN {$wpdb->prefix}woocommerce_attribute_taxonomies wat 
+                                          WHERE tr.object_id = $product_id 
+                                            AND tt.taxonomy LIKE 'pa_%'
+                                            AND tt.taxonomy = CONCAT('pa_', wat.attribute_name)
+        ";
+        $product_attributes_result = $wpdb->get_results($product_attributes_query, ARRAY_A);
+
+        return $product_attributes_result;
+    }
+
 
     /**
      * @param $prod_id
