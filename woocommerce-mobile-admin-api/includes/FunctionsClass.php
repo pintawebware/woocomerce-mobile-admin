@@ -1687,19 +1687,110 @@ class FunctionsClass
             }
         }
 
+        /*
+         * Update product options.
+         */
+        if ($_REQUEST['options'] && (is_array($_REQUEST['options']))) {
+            $product_options = $_REQUEST['options'];
+
+            /*
+             * Empty product attributes in post meta values.
+             */
+            update_post_meta($product_id, '_product_attributes', array());
+
+            /*
+             * Set individual product options.
+             */
+            if (isset($product_options['individual']) && is_array($product_options['individual'])) {
+                $this->updateIndividualProductOptions($pr_id, $product_options['individual']);
+            }
+
+            /*
+             * Set general product options.
+             */
+            if (isset($product_options['general']) && is_array($product_options['general'])) {
+                $this->updateGeneralProductOptions($pr_id, $product_options['general']);
+            }
+        }
 
         # add images
         # загружаем в галерею картинки
         $this->loadImages($post_id, true);
 
-
         $img_arr = $this->getProductImages($post_id);
-
 
         return [
             'product_id' => $post_id,
             'images' => $img_arr,
         ];
+    }
+
+    protected function updateGeneralProductOptions($product_id, $product_options)
+    {
+        global $wpdb;
+
+        /*
+         * Remove previous associations of general options with the given product.
+         */
+        $delete_product_options_query = 
+                 "DELETE tr
+                    FROM {$wpdb->term_relationships} tr
+              INNER JOIN {$wpdb->term_taxonomy}      tt
+                      ON tt.term_taxonomy_id = tr.term_taxonomy_id 
+                   WHERE tr.object_id = $product_id 
+                     AND tt.taxonomy like 'pa_%'
+        ";
+        $wpdb->query($delete_product_options_query);
+
+        /*
+         * Add new associations of general options with the given product.
+         */
+        foreach ($product_options as $product_option_id) {
+            $insert_product_options_query = $wpdb->prepare(
+                "INSERT INTO {$wpdb->term_relationships} 
+                             (object_id, term_taxonomy_id) 
+                      VALUES (%s, %s)",
+                $product_id,
+                $product_option_id
+            );
+            $wpdb->query($insert_product_options_query);
+
+            /*
+             * Record the new attributes in post meta values.
+             */
+            $select_taxonomy_query = $wpdb->prepare(
+                "SELECT taxonomy FROM {$wpdb->term_taxonomy} WHERE term_taxonomy_id = '%s'",
+                $product_option_id
+            );
+            $select_taxonomy_result = $wpdb->get_row($select_taxonomy_query, ARRAY_A);
+            $taxonomy = $select_taxonomy_result['taxonomy'];
+            $product_attributes = get_post_meta($product_id, '_product_attributes');
+            $product_attributes[0][sanitize_title($taxonomy)] = array(
+                'name'          => wc_clean($taxonomy),
+                'value'         => '',
+                'position'      => 0, 
+                'is_visible'    => 1,
+                'is_variation'  => 0, 
+                'is_taxonomy'   => 1 
+            );
+            update_post_meta($product_id, '_product_attributes', $product_attributes[0]);
+        }
+    }
+
+    protected function updateIndividualProductOptions($product_id, $product_options)
+    {
+        $product = new WC_Product($product_id);
+        $product_attributes = array();
+        foreach ($product_options as $product_option) {
+            $product_attribute = new WC_Product_Attribute();
+            $product_attribute->set_id($product_option['option_id']);
+            $product_attribute->set_name($product_option['option_name']);
+            $product_attribute->set_options($product_option['option_values']);
+            $product_attribute->set_visible(true);
+            $product_attributes[] = $product_attribute;
+        }
+        $product->set_attributes($product_attributes);
+        $product->save();
     }
 
     /**
