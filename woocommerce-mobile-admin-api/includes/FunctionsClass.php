@@ -597,17 +597,7 @@ class FunctionsClass
             $result['status_name'] = array_key_exists($allproductinfo->get_status(), get_post_statuses())
                 ? get_post_statuses()[$allproductinfo->get_status()] : 'Draft';
             $result['categories'] = $this->get_categories($products["pr_id"]);
-
-            $attributes = $allproductinfo->get_attributes();
-            foreach ($attributes as $attribute) {
-                $attribute_record = array();
-                $attribute_record['option_name'] = $attribute->get_name(); 
-                $attribute_record['option_id'] = $attribute->get_id(); 
-                $attribute_record['option_value'] = $attribute->get_options();
-                $result['options']['individual'][] = $attribute_record; 
-            }
-
-            $result['options']['general'] = $this->get_options($products["pr_id"]);
+            $result['options'] = $this->get_all_options($allproductinfo);
 
             $descript = $allproductinfo->get_description();
             $szSearchPattern = '~<img [^>]* />~';
@@ -673,9 +663,34 @@ class FunctionsClass
     }
 
     /**
+     * @param $prod_id
+     */
+    protected function get_all_options($product)
+    {
+        $options = array('general' => [], 'individual' => []);
+
+        /* 
+         * Get individual options.
+         */
+        $attributes = $product->get_attributes();
+        foreach ($attributes as $attribute) {
+            $attribute_record = array();
+            $attribute_record['option_name'] = $attribute->get_name(); 
+            $attribute_record['option_id'] = $attribute->get_id(); 
+            $attribute_record['option_value'] = $attribute->get_options();
+            $options['individual'][] = $attribute_record; 
+        }
+        /*
+         * Get general options.
+         */
+        $options['general'] = $this->get_general_options($product->get_id());
+        return $options;
+    }
+
+    /**
      * @param $product_id
      */
-    protected function get_options($product_id)
+    protected function get_general_options($product_id)
     {
         global $wpdb;
 
@@ -933,6 +948,7 @@ class FunctionsClass
                 $res[$key]['price'] = (string)number_format((float)$allproductinfo->get_price(), 2, '.', '');
                 $res[$key]['discount_price'] = (string)number_format((float)$allproductinfo->get_sale_price(), 2, '.', '');
                 $res[$key]['discount'] = (string)number_format((float)$allproductinfo->get_regular_price() - $allproductinfo->get_sale_price(), 2, '.', '');
+                $res[$key]['options'] = $this->get_all_options($allproductinfo);
 #             $result[$key]['description'] = $allproductinfo->get_description();
                 $total_discount += (($allproductinfo->get_regular_price() - $allproductinfo->get_sale_price()) * $res[$key]['quantity']);
 
