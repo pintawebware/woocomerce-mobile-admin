@@ -13,9 +13,10 @@ Author URI: https://github.com/pintawebware
  * Check if WooCommerce is active
  */
 
-if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+if ( in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins'))) ||
+    in_array('woocommerce-3.3.0/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins'))) ) {
 
-	
+    
 
     register_activation_hook(__FILE__, 'woocommerce_pinta_activation');
     register_deactivation_hook(__FILE__, 'woocommerce_pinta_deactivation');
@@ -24,8 +25,12 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 
     define('WOOCOMMERCE_PINTA_DIR', plugin_dir_path(__FILE__));
 
+    if ( file_exists(dirname(WOOCOMMERCE_PINTA_DIR) . '/woocommerce/woocommerce.php' ) ) {
+        include_once ( dirname(WOOCOMMERCE_PINTA_DIR) . '/woocommerce/woocommerce.php');
+    } elseif ( file_exists(dirname(WOOCOMMERCE_PINTA_DIR) . '/woocommerce-3.3.0/woocommerce.php' ) ) {
+        include_once ( dirname(WOOCOMMERCE_PINTA_DIR) . '/woocommerce-3.3.0/woocommerce.php');
+    }
 
-    include_once ( dirname(WOOCOMMERCE_PINTA_DIR) . '/woocommerce/woocommerce.php');
     include_once(WOOCOMMERCE_PINTA_DIR . 'includes/PintaClass.php');
 
     if ($_GET['route']) {
@@ -35,7 +40,6 @@ if (in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_
 } else {
     add_action('admin_notices', 'connector_admin_notices');
 }
-
 
 if (!function_exists('connector_admin_notices')) {
     function connector_admin_notices()

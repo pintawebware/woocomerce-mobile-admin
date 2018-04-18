@@ -12,8 +12,6 @@ class FunctionsClass
 
     public function __construct()
     {
-        $this->check_is_woo_activated();
-
         $plugin = plugin_basename(__FILE__);
         add_filter("plugin_action_links_$plugin", array(&$this, 'setting_link'));
         add_action('woocommerce_order_status_changed', 'pinta_push_change_status');
@@ -88,13 +86,6 @@ class FunctionsClass
         $statusesArr = get_order_statuses();
         $array_flip = array_flip($statusesArr);
         return array_key_exists($status, $array_flip) ? $array_flip[$status] : 'undefined';
-    }
-
-    private function check_is_woo_activated()
-    {
-        if (!in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get_option('active_plugins')))) {
-            $this->generate_output('module_disabled');
-        }
     }
 
     protected function check_db()
