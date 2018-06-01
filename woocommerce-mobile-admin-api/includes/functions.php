@@ -65,7 +65,6 @@ function changeOrderStatus($orderID = 0, $statusID = 0, $comment = '', $inform =
             'ID' => $orderID,
             'post_status' => $statusID,
         ];
-        wp_update_post($post);
 
         $post2 = [
             'post_status' => $statusID,
@@ -89,17 +88,18 @@ function changeOrderStatus($orderID = 0, $statusID = 0, $comment = '', $inform =
             $admin_email = get_option('admin_email');
             $message_headers = "From: \"{$from_name}\" <{$admin_email}>\n" . "Content-Type: text/plain; charset=\"" . get_option('blog_charset') . "\"\n";
 
-            if ( $lang == 'ru' ) {
-                $subject = 'Статус Вашего заказа изменился';
-                $message = 'Уважаемый(-ая) ' . $orderinfo['fio'] . '!' . ' '. $comment . ' ' . sprintf('Статус Вашего заказа изменен с %s на %s.', get_order_statuses()[$old_status], get_order_statuses()[$statusID]);
-            } else {
-                $subject = 'Your order status has changed';
-                $message = 'Dear ' . $orderinfo['fio'] . '!' . ' '. $comment . ' ' . sprintf('Your order status has been changed from %s on %s.', get_order_statuses()[$old_status], get_order_statuses()[$statusID]);
-            }
-
-
-            wp_mail($admin_email, strip_tags($subject), wordwrap($message, 70), $message_headers);
-            wp_mail($billingEmail, strip_tags($subject), wordwrap($message, 70), $message_headers);
+          WC_Post_types::register_post_types(); // Necessary for sending emails.
+          require_once(WC_ABSPATH . '/includes/wc-template-functions.php'); // Necessary for sending emails.
+          wp_templating_constants(); // Necessary for sending emails.
+          global $woocommerce; // Necessary for sending emails.
+          $woocommerce->init(); // Necessary for sending emails.
+          $GLOBALS['wp_locale_switcher'] = new WP_Locale_Switcher(); // Necessary for sending emails.
+          $GLOBALS['wp_rewrite'] = new WP_Rewrite(); // Necessary for sending emails.
+          WC_Emails::init_transactional_emails(); // Necessary for sending emails.
+          
+          $wc_order = wc_get_order($orderID);
+          $wc_order->set_object_read(true);
+          $wc_order->update_status($statusID);
         }
     }
     return true;
