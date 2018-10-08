@@ -1805,7 +1805,7 @@ class FunctionsClass
      */
     function custom_media_sideload_image($image_url = '', $post_id = false, $uploadedfile = [])
     {
-        require_once ABSPATH . 'wp-admin/includes/file.php';
+        require_once  get_home_path() . 'wp-admin/includes/file.php';
         $tmp = download_url($image_url);
         #  Set variables for storage
         #  fix file filename for query strings
@@ -1837,7 +1837,7 @@ class FunctionsClass
         );
         $id = wp_insert_attachment($attachment, $file, $parent);
         if (!is_wp_error($id)) {
-            require_once ABSPATH . 'wp-admin/includes/image.php';
+            require_once get_home_path() . 'wp-admin/includes/image.php';
             $data = wp_generate_attachment_metadata($id, $file);
             wp_update_attachment_metadata($id, $data);
         }
@@ -2082,7 +2082,7 @@ class FunctionsClass
 
 
             if (!function_exists('wp_handle_upload')) {
-                require_once(ABSPATH . 'wp-admin/includes/file.php');
+                require_once get_home_path() . 'wp-admin/includes/file.php';
             }
             $upload_overrides = array('test_form' => false);
 
@@ -2182,7 +2182,7 @@ class FunctionsClass
     protected function removeProductMainImage($pr_id)
     {
         if (!$pr_id) return false;
-        require_once ABSPATH . 'wp-admin/includes/image.php';
+        require_once get_home_path() . 'wp-admin/includes/image.php';
 
 
         $product = new WC_Product($pr_id);

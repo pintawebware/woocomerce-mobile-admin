@@ -1,6 +1,6 @@
 <?php
-require_once(dirname(WP_CONTENT_DIR) . "/wp-includes/pluggable.php");
-require_once(dirname(WP_CONTENT_DIR) . "/wp-includes/class-phpmailer.php");
+require_once(get_home_path() . "wp-includes/pluggable.php");
+require_once(get_home_path() . "wp-includes/class-phpmailer.php");
 include_once(WOOCOMMERCE_PINTA_DIR . 'includes/FunctionsClass.php');
 
 function filterNull($param, $default = 0)
