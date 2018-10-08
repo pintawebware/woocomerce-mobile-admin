@@ -6,7 +6,7 @@ include_once(WOOCOMMERCE_PINTA_DIR . 'includes/functions.php');
 /**
  * Class PintaFunctionsClass
  */
-class FunctionsClass
+class WMAFunctionsClass
 {
     protected $status_list_hide = array("auto-draft", "draft", "trash");
 
@@ -80,10 +80,9 @@ class FunctionsClass
 
     }
 
-
     protected function getStatusKey($status)
     {
-        $statusesArr = get_order_statuses();
+        $statusesArr = wma_get_order_statuses();
         $array_flip = array_flip($statusesArr);
         return array_key_exists($status, $array_flip) ? $array_flip[$status] : 'undefined';
     }
@@ -195,26 +194,26 @@ class FunctionsClass
      */
     public function getOrders($order_id = "")
     {
-        $page = filterNull($_REQUEST['page'], 1);
-        $limit = filterNull($_REQUEST['limit'], 10);
+        $page = wma_filterNull($_REQUEST['page'], 1);
+        $limit = wma_filterNull($_REQUEST['limit'], 10);
 
-        $filter = filterNull($_REQUEST['filter'], []);
-        $fio = filterNull($_REQUEST['fio'], '');
-        $min_price = filterNull($_REQUEST['min_price'], '0');
-        $max_price = filterNull($_REQUEST['max_price'], '');
-        $order_status_id = filterNull($_REQUEST['order_status_id'], '');
-        $date_min = filterNull($_REQUEST['date_min'], '');
-        $date_max = filterNull($_REQUEST['date_max'], '');
-        $sort_by = filterNull($_REQUEST['sort_by'], '');
+        $filter = wma_filterNull($_REQUEST['filter'], []);
+        $fio = wma_filterNull($_REQUEST['fio'], '');
+        $min_price = wma_filterNull($_REQUEST['min_price'], '0');
+        $max_price = wma_filterNull($_REQUEST['max_price'], '');
+        $order_status_id = wma_filterNull($_REQUEST['order_status_id'], '');
+        $date_min = wma_filterNull($_REQUEST['date_min'], '');
+        $date_max = wma_filterNull($_REQUEST['date_max'], '');
+        $sort_by = wma_filterNull($_REQUEST['sort_by'], '');
 
         if (is_array($filter) && $filter) {
-            $fio = filterNull($filter['fio'], '');
-            $min_price = filterNull($filter['min_price'], '0');
-            $max_price = filterNull($filter['max_price'], '');
-            $order_status_id = filterNull($filter['order_status_id'], '');
-            $date_min = filterNull($filter['date_min'], '');
-            $date_max = filterNull($filter['date_max'], '');
-            $sort_by = filterNull($filter['sort_by'], '');
+            $fio = wma_filterNull($filter['fio'], '');
+            $min_price = wma_filterNull($filter['min_price'], '0');
+            $max_price = wma_filterNull($filter['max_price'], '');
+            $order_status_id = wma_filterNull($filter['order_status_id'], '');
+            $date_min = wma_filterNull($filter['date_min'], '');
+            $date_max = wma_filterNull($filter['date_max'], '');
+            $sort_by = wma_filterNull($filter['sort_by'], '');
         }
 
         global $wpdb;
@@ -331,7 +330,7 @@ class FunctionsClass
             $query_totals .= " WHERE " . implode(" AND ", $query_where_parts);
         }
 
-        if (!filterNull($sort_by)) {
+        if (!wma_filterNull($sort_by)) {
             $sort_by = "id";
         }
 
@@ -379,7 +378,7 @@ class FunctionsClass
             'statuses' => $orders_status,
             'currency_code' => get_woocommerce_currency(),
             'total_quantity' => (int)$totals['total_orders'],
-            'total_sum' => (string)number_format(filterNull($totals['total_sales'], 0), 2, '.', ''),
+            'total_sum' => (string)number_format(wma_filterNull($totals['total_sales'], 0), 2, '.', ''),
             'max_price' => (string)number_format((float)$max_price_total, 2, '.', ''),
         );
     }
@@ -418,11 +417,11 @@ class FunctionsClass
 
     public function get_customers()
     {
-        $fio = filterNull($_REQUEST['fio'], '');
-        $page = filterNull($_REQUEST['page'], 1);
-        $limit = filterNull($_REQUEST['limit'], 20);
-        $cust_with_orders = filterNull($_REQUEST['with_orders'], 0);
-        $sort_by = filterNull($_REQUEST['sort'], 'id');
+        $fio = wma_filterNull($_REQUEST['fio'], '');
+        $page = wma_filterNull($_REQUEST['page'], 1);
+        $limit = wma_filterNull($_REQUEST['limit'], 20);
+        $cust_with_orders = wma_filterNull($_REQUEST['with_orders'], 0);
+        $sort_by = wma_filterNull($_REQUEST['sort'], 'id');
 
         global $wpdb;
         $query_where_parts = array();
@@ -522,10 +521,10 @@ class FunctionsClass
         if ($results):
             foreach ($results as $user) {
                 $customer['client_id'] = (string)$user['customer_user'];
-                $customer['quantity'] = (string)filterNull($user['total_orders'], '0');
-                $customer['total'] = (string)number_format((string)filterNull($user['order_total']), 2, '.', '');
-                $customer['fio'] = filterNull($user['shipping_first_name'], filterNull($user['billing_first_name'], ''))
-                    . ' ' . filterNull($user['shipping_last_name'], filterNull($user['billing_last_name'], ''));
+                $customer['quantity'] = (string)wma_filterNull($user['total_orders'], '0');
+                $customer['total'] = (string)number_format((string)wma_filterNull($user['order_total']), 2, '.', '');
+                $customer['fio'] = wma_filterNull($user['shipping_first_name'], wma_filterNull($user['billing_first_name'], ''))
+                    . ' ' . wma_filterNull($user['shipping_last_name'], wma_filterNull($user['billing_last_name'], ''));
                 $customer['currency_code'] = $user['order_currency'];
                 $customers[] = $customer;
             }
@@ -533,7 +532,6 @@ class FunctionsClass
 
         return $customers;
     }
-
 
     /**
      * @return array
@@ -705,7 +703,6 @@ class FunctionsClass
         return $product_attributes_result;
     }
 
-
     /**
      * @param $prod_id
      */
@@ -797,7 +794,7 @@ class FunctionsClass
 
 //            array_pop($result, $res['0']);
         endif;
-        return filterNull($res, []);
+        return wma_filterNull($res, []);
     }
 
     /**
@@ -805,9 +802,9 @@ class FunctionsClass
      */
     protected function getProductsList()
     {
-        $page = filterNull($_REQUEST['page'], 1);
-        $limit = filterNull($_REQUEST['limit'], 10);
-        $name = filterNull($_REQUEST['name'], '');
+        $page = wma_filterNull($_REQUEST['page'], 1);
+        $limit = wma_filterNull($_REQUEST['limit'], 10);
+        $name = wma_filterNull($_REQUEST['name'], '');
 
         global $wpdb;
         $query_where_parts = array();
@@ -853,7 +850,7 @@ class FunctionsClass
                 # url картинки продукта
                 $attachment_id = get_post_thumbnail_id($orderproduct["pr_id"]);
                 $id_image = wp_get_attachment_image_src($attachment_id, 'thumbnail');
-                $result[$key]['image'] = filterNull($id_image[0], '');
+                $result[$key]['image'] = wma_filterNull($id_image[0], '');
 
                 $result[$key]['category'] = $this->get_main_category_in_string($orderproduct["pr_id"]);
             }
@@ -861,7 +858,6 @@ class FunctionsClass
 
         return $result;
     }
-
 
     /**
      * @param $order_id
@@ -946,7 +942,7 @@ class FunctionsClass
                 # url картинки продукта
                 $attachment_id = get_post_thumbnail_id($orderproduct["pr_id"]);
                 $id_image = wp_get_attachment_image_src($attachment_id, 'thumbnail');
-                $res[$key]['image'] = (string)filterNull($id_image[0], '');
+                $res[$key]['image'] = (string)wma_filterNull($id_image[0], '');
             }
         endif;
 
@@ -963,7 +959,6 @@ class FunctionsClass
         return $result;
     }
 
-
     /**
      *
      * "name": "Отменено",
@@ -976,7 +971,7 @@ class FunctionsClass
     {
         $orders_statuses = array();
 
-        $statuses = get_order_statuses();
+        $statuses = wma_get_order_statuses();
         if ($statuses):
             foreach ($statuses as $code => $name) {
                 $orders_statuses[] = array('order_status_id' => $code, 'name' => $name, 'language_id' => 1);
@@ -988,7 +983,7 @@ class FunctionsClass
 
     protected function isValidStatus($stat_id)
     {
-        if (array_key_exists($stat_id, get_order_statuses())) {
+        if (array_key_exists($stat_id, wma_get_order_statuses())) {
             return true;
         }
         return false;
@@ -1005,8 +1000,7 @@ class FunctionsClass
         return $default_direction; # ' ' . $direction;
     }
 
-
-    function _get_order_status_name($order_id, $post_status)
+    public function _get_order_status_name($order_id, $post_status)
     {
         if (function_exists('wc_get_order_status_name')) {
             return wc_get_order_status_name($post_status);
@@ -1020,7 +1014,7 @@ class FunctionsClass
         }
 
 
-        $statuses = get_order_statuses();
+        $statuses = wma_get_order_statuses();
 
         return $statuses[$status];
     }
@@ -1028,7 +1022,7 @@ class FunctionsClass
     public function valid()
     {
         $error = 0;
-        if (!filterNull($_REQUEST['token']) || !$this->issetToken($_REQUEST['token'])) {
+        if (!wma_filterNull($_REQUEST['token']) || !$this->issetToken($_REQUEST['token'])) {
             $error = 'You need to be logged!';
         }
         return $error;
@@ -1226,7 +1220,6 @@ class FunctionsClass
         return $totals;
     }
 
-
     public function ChangeOrderDelivery($address, $city, $order_id)
     {
         $type = 'update';
@@ -1345,7 +1338,7 @@ class FunctionsClass
             return false;
         }
 
-        $sort_by = filterNull($_REQUEST['sort'], 'id');
+        $sort_by = wma_filterNull($_REQUEST['sort'], 'id');
 
 
         $sql = "SELECT
@@ -1389,13 +1382,13 @@ class FunctionsClass
 
                 case 'cancelled':
                 case 'wc-cancelled':
-                case (get_order_statuses()[$sort_by] == 'Отменен'):
+                case (wma_get_order_statuses()[$sort_by] == 'Отменен'):
                     $sql .= " case when posts.post_status = 'wc-cancelled' then 1 else 2 end";
                     break;
 
                 case 'completed':
                 case $this->getStatusKey($sort_by):
-                case (get_order_statuses()[$sort_by] == 'Выполнен'):
+                case (wma_get_order_statuses()[$sort_by] == 'Выполнен'):
                     $sql .= " case when posts.post_status = 'wc-completed' then 1 else 2 end";
                     break;
 
@@ -1483,7 +1476,6 @@ class FunctionsClass
         return $res;
     }
 
-
     protected function setUserToken($id, $token)
     {
         global $wpdb;
@@ -1518,7 +1510,6 @@ class FunctionsClass
         return $res->token;
     }
 
-
     protected static function woocommerce_pinta_activation()
     {
         if (!current_user_can('activate_plugins')) {
@@ -1530,7 +1521,6 @@ class FunctionsClass
 
         self::remove_woocommerce_pinta_tables();
     }
-
 
     protected static function remove_woocommerce_pinta_tables()
     {
@@ -1567,7 +1557,6 @@ class FunctionsClass
 # Раскомментируйте следующую строку, чтобы увидеть функцию в действии
 # exit( var_dump( $_GET ) );
     }
-
 
     public function sendCurl($fields)
     {
@@ -1617,7 +1606,6 @@ class FunctionsClass
         return $result;
     }
 
-
     /**
      *
      */
@@ -1631,11 +1619,11 @@ class FunctionsClass
             'post_author' => '2',
             'post_content' => '',
             'post_status' => (array_key_exists($_REQUEST['status'], get_post_statuses())) ? $_REQUEST['status'] : "publish",
-            'post_title' => filterNull($_REQUEST['name'], ''),
+            'post_title' => wma_filterNull($_REQUEST['name'], ''),
             'post_parent' => '',
             'post_type' => "product",
-            'post_content' => filterNull($_REQUEST['description'], ""),
-            'post_excerpt' => filterNull($shortDescr, ""),
+            'post_content' => wma_filterNull($_REQUEST['description'], ""),
+            'post_excerpt' => wma_filterNull($shortDescr, ""),
         );
 
         $post_id = wp_insert_post($post, true);
@@ -1647,28 +1635,28 @@ class FunctionsClass
 #         wp_set_object_terms( $post_id_id, 'Races', 'product_cat' );
 #         wp_set_object_terms($post_id_id, 'simple', 'product_type');
         update_post_meta($post_id, '_visibility', 'visible');
-        update_post_meta($post_id, '_stock_status', filterNull($_REQUEST['substatus'], 'instock'));
+        update_post_meta($post_id, '_stock_status', wma_filterNull($_REQUEST['substatus'], 'instock'));
         update_post_meta($post_id, '_downloadable', 'no');
         update_post_meta($post_id, 'total_sales', '0');
 #         update_post_meta( $post_id, '_downloadable', 'yes');
 #         update_post_meta( $post_id, '_virtual', 'yes');
-        update_post_meta($post_id, '_regular_price', filterNull($_REQUEST['price'], 0));
-        update_post_meta($post_id, '_sale_price', filterNull($_REQUEST['price'], 0));
+        update_post_meta($post_id, '_regular_price', wma_filterNull($_REQUEST['price'], 0));
+        update_post_meta($post_id, '_sale_price', wma_filterNull($_REQUEST['price'], 0));
         update_post_meta($post_id, '_purchase_note', "");
         update_post_meta($post_id, '_featured', "no");
         update_post_meta($post_id, '_weight', "");
         update_post_meta($post_id, '_length', "");
 #         update_post_meta( $post_id, '_width', "" );
 #         update_post_meta( $post_id, '_height', "" );
-        update_post_meta($post_id, '_sku', filterNull($_REQUEST['sku'], ''));
+        update_post_meta($post_id, '_sku', wma_filterNull($_REQUEST['sku'], ''));
         update_post_meta($post_id, '_product_attributes', array());
         update_post_meta($post_id, '_sale_price_dates_from', "");
         update_post_meta($post_id, '_sale_price_dates_to', "");
-        update_post_meta($post_id, '_price', filterNull($_REQUEST['price'], 0));
+        update_post_meta($post_id, '_price', wma_filterNull($_REQUEST['price'], 0));
         update_post_meta($post_id, '_sold_individually', "");
         update_post_meta($post_id, '_manage_stock', "yes");
         update_post_meta($post_id, '_backorders', "no");
-        update_post_meta($post_id, '_stock', filterNull($_REQUEST['quantity'], 0));
+        update_post_meta($post_id, '_stock', wma_filterNull($_REQUEST['quantity'], 0));
 
 #         update_post_meta( $post_id, '_wp_attachment_metadata', serialize($new_images) );
 
@@ -1678,7 +1666,7 @@ class FunctionsClass
         update_post_meta($post_id, '_download_limit', '');
         update_post_meta($post_id, '_download_expiry', '');
         update_post_meta($post_id, '_download_type', '');
-#         update_post_meta( $post_id, '_product_image_gallery', filterNull($_REQUEST['main_img'], 0) );
+#         update_post_meta( $post_id, '_product_image_gallery', wma_filterNull($_REQUEST['main_img'], 0) );
 
         # add categories_ids
         # меняем категорию
@@ -1905,7 +1893,6 @@ class FunctionsClass
         return true;
     }
 
-
     /**
      * Set new product price
      *
@@ -2070,7 +2057,6 @@ class FunctionsClass
         ];
     }
 
-
     protected function loadImages($pr_id, $makeFirstMain = false)
     {
 
@@ -2178,7 +2164,6 @@ class FunctionsClass
 
     }
 
-
     protected function removeProductMainImage($pr_id)
     {
         if (!$pr_id) return false;
@@ -2269,13 +2254,11 @@ class FunctionsClass
         ));
         return true;
     }
-
 }
 
-
 ## Удаляет все вложения записи (прикрепленные медиафайлы) записи вместе с записью (постом)
-add_action('before_delete_post', 'delete_attachments_with_post');
-function delete_attachments_with_post($postid)
+add_action('before_delete_post', 'wma_delete_attachments_with_post');
+function wma_delete_attachments_with_post($postid)
 {
     $post = get_post($postid);
 

@@ -4,7 +4,7 @@ include_once(WOOCOMMERCE_PINTA_DIR . 'includes/FunctionsClass.php');
 
 register_deactivation_hook(__FILE__, array('ma_connector', 'woocommerce_pinta_deactivation'));
 
-class PintaClass extends FunctionsClass
+class WMA_PintaClass extends WMAFunctionsClass
 {
     const PLUGIN_VERSION = '2.0';
     const HASH_ALGORITHM = 'sha256';
@@ -15,7 +15,7 @@ class PintaClass extends FunctionsClass
         parent:: __construct();
 
         $this->check_db();
-        $type = filterNull($_GET['route']);
+        $type = wma_filterNull($_GET['route']);
 
         switch ($type) {
             case 'login':
@@ -89,7 +89,6 @@ class PintaClass extends FunctionsClass
         }
     }
 
-
     /**
      * @api {post} index.php?route=login  Login
      * @apiName Login
@@ -127,19 +126,19 @@ class PintaClass extends FunctionsClass
     private function login()
     {
         
-        if (!filterNull($_REQUEST['username']) || !filterNull($_REQUEST['password'])) {
+        if (!wma_filterNull($_REQUEST['username']) || !wma_filterNull($_REQUEST['password'])) {
             echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Missing some params', 'status' => false]);
             die;
         }
 
         $user = $this->check_Auth($_REQUEST['username'], $_REQUEST['password']);
 
-        if (!filterNull($user['ID'])) {
+        if (!wma_filterNull($user['ID'])) {
             echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Incorrect username or password', 'status' => false]);
             die;
         }
         $os = $_REQUEST['os_type'] ? $_REQUEST['os_type'] : '';
-        if (filterNull($_REQUEST['device_token'])) {
+        if (wma_filterNull($_REQUEST['device_token'])) {
             $devices = $this->getUserDevices($user['ID'], $_REQUEST['device_token'], $os);
             if (!$devices) {
                 $this->setUserDeviceToken($user['ID'], $_REQUEST['device_token'], $os);
@@ -191,7 +190,7 @@ class PintaClass extends FunctionsClass
      */
     private function deletedevicetoken()
     {
-        if (filterNull($_REQUEST['old_token'])) {
+        if (wma_filterNull($_REQUEST['old_token'])) {
             $old_token = $_REQUEST['old_token'];
 
             global $wpdb;
@@ -258,7 +257,7 @@ class PintaClass extends FunctionsClass
     private function updatedevicetoken()
     {
 
-        if (filterNull($_REQUEST['old_token']) && filterNull($_REQUEST['new_token'])) {
+        if (wma_filterNull($_REQUEST['old_token']) && wma_filterNull($_REQUEST['new_token'])) {
             $updated = $this->updateUserDeviceToken($_REQUEST['old_token'], $_REQUEST['new_token']);
             if ($updated) {
                 echo json_encode(['version' => self::PLUGIN_VERSION, 'status' => true]);
@@ -272,7 +271,6 @@ class PintaClass extends FunctionsClass
             die;
         }
     }
-
 
     /**
      * @api {get} index.php?route=statistic  getDashboardStatistic
@@ -351,7 +349,7 @@ class PintaClass extends FunctionsClass
             die;
         }
 
-        if (filterNull($_REQUEST['filter'])) {
+        if (wma_filterNull($_REQUEST['filter'])) {
             if (!$this->is_valid_filter($_REQUEST['filter'])) {
                 echo json_encode(['error' => 'Unknown filter set', 'status' => false]);
                 die;
@@ -746,7 +744,7 @@ class PintaClass extends FunctionsClass
             die;
         }
 
-        if (!filterNull($_REQUEST['order_id'])) {
+        if (!wma_filterNull($_REQUEST['order_id'])) {
             echo json_encode([
                 'version' => self::PLUGIN_VERSION,
                 'error' => 'You have not specified ID',
@@ -767,7 +765,6 @@ class PintaClass extends FunctionsClass
             die;
         }
     }
-
 
     /**
      * @api {get} index.php?route=orderproducts  getOrderProducts
@@ -848,7 +845,7 @@ class PintaClass extends FunctionsClass
             die;
         }
 
-        if (!filterNull($_REQUEST['order_id'])) {
+        if (!wma_filterNull($_REQUEST['order_id'])) {
             echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'You have not specified ID', 'status' => false]);
             die;
         }
@@ -911,7 +908,7 @@ class PintaClass extends FunctionsClass
             die;
         }
 
-        if (!filterNull($_REQUEST['order_id'])) {
+        if (!wma_filterNull($_REQUEST['order_id'])) {
             echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'You have not specified ID', 'status' => false]);
             die;
         }
@@ -927,7 +924,6 @@ class PintaClass extends FunctionsClass
         echo json_encode(['version' => self::PLUGIN_VERSION, 'response' => $order, 'status' => true]);
         die;
     }
-
 
     /**
      * @api {get} index.php?route=products  getProductsList
@@ -1124,7 +1120,7 @@ class PintaClass extends FunctionsClass
             die;
         }
 
-        if (!filterNull($_REQUEST['product_id'])) {
+        if (!wma_filterNull($_REQUEST['product_id'])) {
             echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'You have not specified ID', 'status' => false]);
             die;
         }
@@ -1197,15 +1193,15 @@ class PintaClass extends FunctionsClass
 
         $statusID = $_REQUEST['status_id'];
         $orderID = $_REQUEST['order_id'];
-        $comment = filterNull($_REQUEST['comment'], '');
-        $inform = filterNull($_REQUEST['inform'], false);
+        $comment = wma_filterNull($_REQUEST['comment'], '');
+        $inform = wma_filterNull($_REQUEST['inform'], false);
         $lang = isset($_REQUEST['lang']) ? $_REQUEST['lang'] : 'ru';
 
         if (!$this->isValidStatus($statusID)) {
             echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Unknown status params', 'status' => false]);
             die;
         }
-        $response = changeOrderStatus($orderID, $statusID, $comment, $inform, $lang);
+        $response = wma_changeOrderStatus($orderID, $statusID, $comment, $inform, $lang);
         if (!$response) {
             echo json_encode(['version' => self::PLUGIN_VERSION, 'error' => 'Error', 'status' => false]);
             die;
@@ -1213,7 +1209,7 @@ class PintaClass extends FunctionsClass
 
         $post_object = get_post($orderID);
         $data = [
-            "name" => get_order_statuses()[$post_object->post_status],
+            "name" => wma_get_order_statuses()[$post_object->post_status],
             "date_added" => $post_object->post_modified,
         ];
 
@@ -1266,7 +1262,7 @@ class PintaClass extends FunctionsClass
 
         $address = $_REQUEST['address'];
         $order_id = $_REQUEST['order_id'];
-        $city = filterNull($_REQUEST['city'], false);
+        $city = wma_filterNull($_REQUEST['city'], false);
 
         $data = $this->ChangeOrderDelivery($address, $city, $order_id);
         if ($data) {
@@ -1327,6 +1323,7 @@ class PintaClass extends FunctionsClass
      *
      *
      */
+
     private function clientinfo()
     {
         $error = $this->valid();
@@ -1368,16 +1365,16 @@ class PintaClass extends FunctionsClass
         $customer_order_totals = $this->_get_customer_orders_total($cl_obj->ID);
         $response = [
             "client_id" => (string)$client_id,
-            "fio" => filterNull($cl_obj->display_name,
-                filterNull($cl_obj->first_name, '') . ' '
-                . filterNull($cl_obj->last_name, '')),
-            "total" => (string)number_format((float)filterNull($customer_order_totals['sum_ords']), 2, '.', ''),
-            "quantity" => (string)filterNull($customer_order_totals['c_orders_count']),
+            "fio" => wma_filterNull($cl_obj->display_name,
+                wma_filterNull($cl_obj->first_name, '') . ' '
+                . wma_filterNull($cl_obj->last_name, '')),
+            "total" => (string)number_format((float)wma_filterNull($customer_order_totals['sum_ords']), 2, '.', ''),
+            "quantity" => (string)wma_filterNull($customer_order_totals['c_orders_count']),
             "cancelled" => (string)$count_canceled,
             "completed" => (string)$count_completed,
-            "currency_code" => filterNull($currency_code, ''),
-            "email" => filterNull($cl_obj->user_email, ''),
-            "telephone" => filterNull($cl_obj->billing_phone, ''),
+            "currency_code" => wma_filterNull($currency_code, ''),
+            "email" => wma_filterNull($cl_obj->user_email, ''),
+            "telephone" => wma_filterNull($cl_obj->billing_phone, ''),
         ];
 
         echo(json_encode([
@@ -1440,6 +1437,7 @@ class PintaClass extends FunctionsClass
      * }
      *
      */
+
     public function clients()
     {
         $error = $this->valid();
@@ -1561,7 +1559,6 @@ class PintaClass extends FunctionsClass
             'status' => true]));
         die;
     }
-
 
     /**
      * @api {get} index.php?route=orderhistory  getOrderHistory
@@ -1736,7 +1733,6 @@ class PintaClass extends FunctionsClass
 
     }
 
-
     /**
      * @api {get} index.php?route=updateproduct  updateProduct
      * @apiName updateProduct
@@ -1859,7 +1855,6 @@ class PintaClass extends FunctionsClass
         die;
     }
 
-
     /**
      * @api {post} index.php?route=mainimage  mainImage
      * @apiName mainImage
@@ -1924,7 +1919,6 @@ class PintaClass extends FunctionsClass
         ]);
         die;
     }
-
 
     /**
      * @api {post} index.php?route=getsubstatus  getSubstatus

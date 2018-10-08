@@ -31,10 +31,10 @@ if ( in_array('woocommerce/woocommerce.php', apply_filters('active_plugins', get
         include_once ( dirname(WOOCOMMERCE_PINTA_DIR) . '/woocommerce-3.3.0/woocommerce.php');
     }
 
-    include_once(WOOCOMMERCE_PINTA_DIR . 'includes/PintaClass.php');
+    include_once(WOOCOMMERCE_PINTA_DIR . 'includes/WMA_PintaClass.php');
 
     if ($_GET['route']) {
-        $pinta = new PintaClass();
+        $pinta = new WMA_PintaClass();
     }
 
 } else {
@@ -45,7 +45,7 @@ if (!function_exists('connector_admin_notices')) {
     function connector_admin_notices()
     {
         echo '<div id="notice" class="error"><p>';
-        echo '<b> WOOCOMMERCE PINTA </b> add-on requires <a href="http://www.storeapps.org/woocommerce/"> WooCommerce </a> plugin. Please install and activate it.';
+        echo '<b> WOOCOMMERCE PINTA </b> add-on requires WooCommerce plugin. Please install and activate it.';
         echo '</p></div>', "\n";
 
     }

@@ -3,13 +3,13 @@ require_once(get_home_path() . "wp-includes/pluggable.php");
 require_once(get_home_path() . "wp-includes/class-phpmailer.php");
 include_once(WOOCOMMERCE_PINTA_DIR . 'includes/FunctionsClass.php');
 
-function filterNull($param, $default = 0)
+function wma_filterNull($param, $default = 0)
 {
     return (isset($param) && $param) ? $param : $default;
 }
 
 
-function get_order_statuses()
+function wma_get_order_statuses()
 {
     if (function_exists('wc_get_order_statuses')) {
         return wc_get_order_statuses();
@@ -54,7 +54,7 @@ function get_order_statuses()
 //    $phpmailer->SMTPSecure = "ssl";
 //}
 
-function changeOrderStatus($orderID = 0, $statusID = 0, $comment = '', $inform = false, $lang )
+function wma_changeOrderStatus($orderID = 0, $statusID = 0, $comment = '', $inform = false, $lang )
 {
     if (!$_REQUEST['route']) return;
     $post_object = get_post($orderID);
@@ -80,7 +80,7 @@ function changeOrderStatus($orderID = 0, $statusID = 0, $comment = '', $inform =
     endif;
 
     if ($inform) {
-        $orderinfo = (new FunctionsClass())->getOrders($orderID);
+        $orderinfo = (new WMAFunctionsClass())->getOrders($orderID);
         $billingEmail = $orderinfo['email'];
         if ($billingEmail) {
             $from_name = get_site_option('site_name') == '' ? 'WordPress' : esc_html(get_site_option('site_name'));
@@ -109,7 +109,7 @@ function changeOrderStatus($orderID = 0, $statusID = 0, $comment = '', $inform =
 do_action( 'woocommerce_new_order', $order_id );// define the woocommerce_new_order callback
 function action_woocommerce_new_order( $order_id ) {
 
-    $funclass = new FunctionsClass();
+    $funclass = new WMAFunctionsClass();
     $post_object = $funclass->getOrders($order_id);
     if ($post_object):
     $msg['ios'] = [
