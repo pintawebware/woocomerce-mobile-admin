@@ -1,6 +1,6 @@
 <?php
 
-include_once(WOOCOMMERCE_PINTA_DIR . 'includes/FunctionsClass.php');
+include_once(WOOCOMMERCE_PINTA_DIR . 'includes/WMA_FunctionsClass.php');
 
 register_deactivation_hook(__FILE__, array('ma_connector', 'woocommerce_pinta_deactivation'));
 

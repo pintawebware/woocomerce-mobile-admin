@@ -1,4 +1,7 @@
 <?php
+if ( ! function_exists( 'get_home_path' ) ) {
+    include_once ABSPATH . '/wp-admin/includes/file.php';
+}
 require_once(get_home_path() . "wp-includes/pluggable.php");
 require_once(get_home_path() . "wp-includes/class-phpmailer.php");
 include_once(WOOCOMMERCE_PINTA_DIR . 'includes/FunctionsClass.php');
